@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(path = "/subject")
+@RequestMapping(path = "/api/subjects")
+
 public class SubjectController {
 
     @Autowired
     private SubjectRepository subjectRepository;
 
-    @GetMapping(path="/all")
+    @GetMapping(path="")
     public @ResponseBody
     Iterable<Subject> getAllSubjects() {
         // This returns a JSON or XML with the users
