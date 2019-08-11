@@ -44,7 +44,7 @@ public class User extends BaseEntity {
                     name = "started_course_id", referencedColumnName = "id"))
     private Collection<CourseStarted> startedCourses;
 
-    
+
     @ManyToMany(mappedBy = "teachers")
     private Collection<SubjectSchedule> teachSubjects;
 
@@ -121,5 +121,29 @@ public class User extends BaseEntity {
 
     public void setStartedCourses(Collection<CourseStarted> startedCourses) {
         this.startedCourses = startedCourses;
+    }
+
+    public Collection<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Collection<Grade> grades) {
+        this.grades = grades;
+    }
+
+    public Collection<SubjectSchedule> getTeachSubjects() {
+        return teachSubjects;
+    }
+
+    public void setTeachSubjects(Collection<SubjectSchedule> teachSubjects) {
+        this.teachSubjects = teachSubjects;
+    }
+
+    public Collection<SubjectSchedule> getLearnSubjects() {
+        return learnSubjects;
+    }
+
+    public void setLearnSubjects(Collection<SubjectSchedule> learnSubjects) {
+        this.learnSubjects = learnSubjects;
     }
 }
