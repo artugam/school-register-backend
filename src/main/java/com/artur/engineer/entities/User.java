@@ -44,6 +44,7 @@ public class User extends BaseEntity {
                     name = "started_course_id", referencedColumnName = "id"))
     private Collection<CourseStarted> startedCourses;
 
+    
     @ManyToMany(mappedBy = "teachers")
     private Collection<SubjectSchedule> teachSubjects;
 
