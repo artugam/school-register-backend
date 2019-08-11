@@ -4,19 +4,23 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String firstName;
+
     private String lastName;
 
     @Column(unique = true)
     private String email;
+
     private String password;
+
     private boolean enabled;
+
     private boolean tokenExpired;
 
     @ManyToMany
@@ -28,6 +32,9 @@ public class User extends BaseEntity{
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Collection<Grade> grades;
+
     @ManyToMany
     @JoinTable(
             name = "user_started_course",
@@ -36,6 +43,12 @@ public class User extends BaseEntity{
             inverseJoinColumns = @JoinColumn(
                     name = "started_course_id", referencedColumnName = "id"))
     private Collection<CourseStarted> startedCourses;
+
+    @ManyToMany(mappedBy = "teachers")
+    private Collection<SubjectSchedule> teachSubjects;
+
+    @ManyToMany(mappedBy = "students")
+    private Collection<SubjectSchedule> learnSubjects;
 
     public Long getId() {
         return id;

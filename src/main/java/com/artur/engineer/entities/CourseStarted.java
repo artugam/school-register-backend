@@ -19,6 +19,8 @@ public class CourseStarted extends BaseEntity {
 
     private Date startDate = new Date();
 
+    private int semester;
+
 
     @ManyToMany(mappedBy = "startedCourses")
     private Collection<User> users = new HashSet<>();
@@ -53,5 +55,13 @@ public class CourseStarted extends BaseEntity {
 
     public void setUsers(Collection<User> users) {
         this.users = users;
+    }
+
+    public int getSemester() {
+        return semester;
+    }
+
+    public void setSemester(int semester) {
+        this.semester = semester;
     }
 }
