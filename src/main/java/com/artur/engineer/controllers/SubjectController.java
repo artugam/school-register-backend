@@ -1,5 +1,6 @@
 package com.artur.engineer.controllers;
 
+import com.artur.engineer.entities.Course;
 import com.artur.engineer.entities.Subject;
 import com.artur.engineer.repositories.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,12 @@ public class SubjectController {
     @GetMapping(path="")
     public @ResponseBody
     Iterable<Subject> getAllSubjects() {
+
+
+
+
+
+
         // This returns a JSON or XML with the users
         return subjectRepository.findAll();
     }

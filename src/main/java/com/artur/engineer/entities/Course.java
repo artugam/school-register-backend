@@ -38,9 +38,7 @@ public class Course extends BaseEntity {
 
     private String degree;
 
-    public int semesters;
-
-    private int termsAmount;
+    private int semesters;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Collection<CourseStarted> startedCourses;
@@ -77,14 +75,6 @@ public class Course extends BaseEntity {
             return;
         }
         this.degree = degree;
-    }
-
-    public int getTermsAmount() {
-        return termsAmount;
-    }
-
-    public void setTermsAmount(int termsAmount) {
-        this.termsAmount = termsAmount;
     }
 
     public Collection<CourseStarted> getStartedCourses() {

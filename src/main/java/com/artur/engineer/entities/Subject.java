@@ -62,7 +62,7 @@ public class Subject {
     }
 
     public void setGradeType(String gradeType) {
-        if(!Arrays.asList(ALLOWED_GRADES_TYPES).contains(gradeType)) {
+        if (!Arrays.asList(ALLOWED_GRADES_TYPES).contains(gradeType)) {
             return;
         }
         this.gradeType = gradeType;
