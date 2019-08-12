@@ -1,6 +1,5 @@
 package com.artur.engineer.controllers;
 
-import com.artur.engineer.entities.Course;
 import com.artur.engineer.entities.Subject;
 import com.artur.engineer.repositories.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;

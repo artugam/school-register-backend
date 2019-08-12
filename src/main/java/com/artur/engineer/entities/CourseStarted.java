@@ -25,7 +25,7 @@ public class CourseStarted extends BaseEntity {
     @ManyToMany(mappedBy = "startedCourses")
     private Collection<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "startedCourse", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "courseStarted", cascade = CascadeType.ALL)
     private Collection<SubjectSchedule> subjectSchedules;
 
     public Long getId() {
