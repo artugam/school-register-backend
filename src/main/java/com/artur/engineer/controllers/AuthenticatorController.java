@@ -14,22 +14,15 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Artur Pilch <artur.pilch12@gmail.com>
  */
 @Controller
-@RequestMapping(path = "/api/users")
-public class UserController{
-
+@RequestMapping(path = "/api/auth")
+public class AuthenticatorController {
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private UserManager userManager;
 
-    @GetMapping(path = "")
-    public @ResponseBody
-    Iterable<User> getAll() {
-        return this.userRepository.findAll();
-    }
-
-    @PostMapping(path = "")
+    @PostMapping(path = "/login")
     public @ResponseBody
     User create(
             @RequestParam("firstName") String firstName,

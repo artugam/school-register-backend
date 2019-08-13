@@ -1,5 +1,6 @@
 package com.artur.engineer.config;
 
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +11,7 @@ import javax.ws.rs.HttpMethod;
 @Configuration
 public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public final String baseApiPath = "/api";
     // Create 2 users for demo
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -30,9 +32,10 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/subject/**").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/books").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.GET, baseApiPath + "/user/**").hasRole()2
+                .antMatchers(HttpMethod.POST, baseApiPath + "/user/**").hasRole("ROLE_ADMIN")
+                .antMatchers(HttpMethod.POST, baseApiPath+ "/lgoin").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, baseApiPath + "/books/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/books/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
                 .and()

@@ -1,5 +1,7 @@
 package com.artur.engineer.components;
 
+import com.artur.engineer.engine.exceptions.ApiException;
+import com.artur.engineer.engine.managers.UserManager;
 import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.repositories.RoleRepository;
@@ -7,7 +9,6 @@ import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -21,11 +22,11 @@ public class UserInitialDataLoader extends InitialDataLoader implements
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
+    private UserManager userManager;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private RoleRepository roleRepository;
+
 
     @Transactional
     public Role createRoleIfNotFound(
@@ -46,41 +47,31 @@ public class UserInitialDataLoader extends InitialDataLoader implements
         this.createRoleIfNotFound("ROLE_ADMIN");
         this.createRoleIfNotFound("ROLE_USER");
 
-        this.createAdminIfNotExist();
-        this.createDefaultUserInfNotExist();
+        try {
+            this.createAdminIfNotExist();
+            this.createDefaultUserIfNotExist();
+        } catch (ApiException exc) {
+            //do Nothing
+        }
+
     }
 
     @Transactional
-    public void createDefaultUserInfNotExist() {
+    public void createDefaultUserIfNotExist() throws ApiException {
         if (null != userRepository.findByEmail("user@user.com")) {
             return;
         }
         Role userRole = roleRepository.findByName("ROLE_USER");
-        User user = new User();
-        user.setFirstName("User");
-        user.setLastName("User");
-        user.setPassword(passwordEncoder.encode("user"));
-        user.setEmail("user@user.com");
-        user.setRoles(Arrays.asList(userRole));
-        user.setEnabled(true);
-        userRepository.save(user);
+        User user = userManager.create("User", "User", "user@user.com", "user", Arrays.asList(userRole), true);
     }
 
     @Transactional
-    public void createAdminIfNotExist() {
+    public void createAdminIfNotExist() throws ApiException {
         if (null != userRepository.findByEmail("admin@admin.com")) {
             return;
         }
         Role userRole = roleRepository.findByName("ROLE_USER");
         Role adminRole = roleRepository.findByName("ROLE_ADMIN");
-        User admin = new User();
-        admin.setFirstName("Admin");
-        admin.setLastName("Admin");
-        admin.setPassword(passwordEncoder.encode("admin"));
-        admin.setEmail("admin@admin.com");
-        admin.setRoles(Arrays.asList(adminRole, userRole));
-        admin.setEnabled(true);
-        userRepository.save(admin);
-
+        User admin = userManager.create("Admin", "Admin", "admin@admin.com", "admin", Arrays.asList(adminRole, userRole), true);
     }
 }
