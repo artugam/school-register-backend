@@ -6,6 +6,7 @@ import com.artur.engineer.entities.User;
 import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,6 +24,7 @@ public class UserController{
     @Autowired
     private UserManager userManager;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(path = "")
     public @ResponseBody
     Iterable<User> getAll() {
