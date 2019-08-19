@@ -1,5 +1,9 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.user.UserViews;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -8,19 +12,25 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(UserViews.Normal.class)
     private Long id;
 
+    @JsonView(UserViews.Normal.class)
     private String firstName;
 
+    @JsonView(UserViews.Normal.class)
     private String lastName;
 
+    @JsonView(UserViews.Normal.class)
     @Column(unique = true)
     private String email;
 
     private String password;
 
+    @JsonView(UserViews.Normal.class)
     private boolean enabled;
 
+    @JsonView(UserViews.Normal.class)
     private boolean tokenExpired;
 
     @ManyToMany
@@ -30,11 +40,14 @@ public class User extends BaseEntity {
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
+    @JsonManagedReference
+    @JsonView(UserViews.Normal.class)
     private Collection<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Grade> grades;
 
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(
             name = "user_started_course",
@@ -45,9 +58,11 @@ public class User extends BaseEntity {
     private Collection<CourseStarted> startedCourses;
 
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "teachers")
     private Collection<SubjectSchedule> teachSubjects;
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "students")
     private Collection<SubjectSchedule> learnSubjects;
 
