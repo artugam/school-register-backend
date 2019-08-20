@@ -1,6 +1,6 @@
 package com.artur.engineer.entities;
 
-import com.artur.engineer.engine.views.user.UserViews;
+import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -12,26 +12,23 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(UserViews.Normal.class)
+    @JsonView(UserView.Normal.class)
     private Long id;
 
-    @JsonView(UserViews.Normal.class)
+    @JsonView(UserView.Normal.class)
     private String firstName;
 
-    @JsonView(UserViews.Normal.class)
+    @JsonView(UserView.Normal.class)
     private String lastName;
 
-    @JsonView(UserViews.Normal.class)
+    @JsonView({UserView.Normal.class, UserView.class})
     @Column(unique = true)
     private String email;
 
     private String password;
 
-    @JsonView(UserViews.Normal.class)
+    @JsonView(UserView.Normal.class)
     private boolean enabled;
-
-    @JsonView(UserViews.Normal.class)
-    private boolean tokenExpired;
 
     @ManyToMany
     @JoinTable(
@@ -40,14 +37,13 @@ public class User extends BaseEntity {
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
-    @JsonManagedReference
-    @JsonView(UserViews.Normal.class)
+    @JsonView(UserView.Normal.class)
     private Collection<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Grade> grades;
 
-    @JsonManagedReference
+
     @ManyToMany
     @JoinTable(
             name = "user_started_course",
@@ -57,12 +53,9 @@ public class User extends BaseEntity {
                     name = "started_course_id", referencedColumnName = "id"))
     private Collection<CourseStarted> startedCourses;
 
-
-    @JsonManagedReference
     @ManyToMany(mappedBy = "teachers")
     private Collection<SubjectSchedule> teachSubjects;
 
-    @JsonManagedReference
     @ManyToMany(mappedBy = "students")
     private Collection<SubjectSchedule> learnSubjects;
 
@@ -112,14 +105,6 @@ public class User extends BaseEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public boolean isTokenExpired() {
-        return tokenExpired;
-    }
-
-    public void setTokenExpired(boolean tokenExpired) {
-        this.tokenExpired = tokenExpired;
     }
 
     public Collection<Role> getRoles() {

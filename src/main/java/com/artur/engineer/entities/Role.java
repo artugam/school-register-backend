@@ -1,5 +1,6 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -19,12 +20,13 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView({UserView.Normal.class})
     private Long id;
 
+    @JsonView({UserView.Normal.class})
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    @JsonBackReference
     private Collection<User> users;
 
     public Long getId() {

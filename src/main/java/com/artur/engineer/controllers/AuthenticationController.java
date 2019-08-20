@@ -48,27 +48,11 @@ public class AuthenticationController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
-//    @PostMapping(path = "/login")
-//    public @ResponseBody
-//    User create(
-//            @RequestParam("email") String email,
-//            @RequestParam("password") String password
-//    ) {
-//        try {
-//            return userManager.create(firstName, lastName, email, password);
-//        } catch (ApiException exc)
-//        {
-//            throw new ResponseStatusException(
-//                    HttpStatus.BAD_REQUEST, exc.getMessage(), exc);
-//        }
-//
-//    }
-
     @PostMapping(path = "/login")
-    public ResponseEntity<?> authenticateUser (@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
+                        loginRequest.getEmail(),
                         loginRequest.getPassword()
                 )
         );

@@ -44,8 +44,8 @@ public class UserManager {
     }
 
     public void validateUser(User user) throws ApiException {
-        if (null != userRepository.findByEmail(user.getEmail())) {
-            throw new ApiException("User with provided email already exist");
-        }
+//        if (null != userRepository.findByEmail(user.getEmail())) {
+//            throw new ApiException("User with provided email already exist");
+//        }
     }
 }
