@@ -3,6 +3,7 @@ package com.artur.engineer.engine.managers;
 import com.artur.engineer.engine.exceptions.ApiException;
 import com.artur.engineer.engine.readers.RoleReader;
 import com.artur.engineer.entities.User;
+import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,8 +35,6 @@ public class UserManager {
         user.setRoles(roles);
         user.setEnabled(enabled);
 
-        this.validateUser(user);
-
         return userRepository.save(user);
     }
 
@@ -43,9 +42,8 @@ public class UserManager {
         return this.create(firstName, lastName, email, password, roleReader.getUserRoleAsCollection(), true);
     }
 
-    public void validateUser(User user) throws ApiException {
-//        if (null != userRepository.findByEmail(user.getEmail())) {
-//            throw new ApiException("User with provided email already exist");
-//        }
+    public User create(UserCreate userCreate) throws ApiException {
+        return this.create(userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), userCreate.getPassword(), roleReader.getUserRoleAsCollection(), true);
     }
+
 }

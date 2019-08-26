@@ -41,14 +41,6 @@ public class UserController {
         return this.userRepository.findAll();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping(path = "/me")
-    @ResponseStatus(HttpStatus.OK)
-    public
-    Optional<User> me(@CurrentUser UserPrincipal currentUser) {
-        return userRepository.findById(currentUser.getId());
-    }
-
     @PostMapping(path = "")
     public
     User create(
