@@ -31,6 +31,7 @@ import java.util.Optional;
  * @author Artur Pilch <artur.pilch12@gmail.com>
  */
 @RestController
+@CrossOrigin
 @RequestMapping(path = "/api/auth")
 public class AuthenticationController {
 
