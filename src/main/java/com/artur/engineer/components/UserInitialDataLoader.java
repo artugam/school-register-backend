@@ -12,7 +12,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 @Component
 public class UserInitialDataLoader extends InitialDataLoader implements
@@ -44,8 +46,10 @@ public class UserInitialDataLoader extends InitialDataLoader implements
     @Override
     @Transactional
     public void run() {
-        this.createRoleIfNotFound("ROLE_ADMIN");
-        this.createRoleIfNotFound("ROLE_USER");
+        this.createRoleIfNotFound(Role.ROLE_ADMIN);
+        this.createRoleIfNotFound(Role.ROLE_TEACHER);
+        this.createRoleIfNotFound(Role.ROLE_SUPER_USER);
+        this.createRoleIfNotFound(Role.ROLE_USER);
 
         try {
             this.createAdminIfNotExist();
@@ -61,7 +65,7 @@ public class UserInitialDataLoader extends InitialDataLoader implements
         if (null != userRepository.findByEmail("user@user.com")) {
             return;
         }
-        Role userRole = roleRepository.findByName("ROLE_USER");
+        Role userRole = roleRepository.findByName(Role.ROLE_USER);
         User user = userManager.create("User", "User", "user@user.com", "user", Arrays.asList(userRole), true);
     }
 
@@ -70,8 +74,11 @@ public class UserInitialDataLoader extends InitialDataLoader implements
         if (null != userRepository.findByEmail("admin@admin.com")) {
             return;
         }
-        Role userRole = roleRepository.findByName("ROLE_USER");
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
-        User admin = userManager.create("Admin", "Admin", "admin@admin.com", "admin", Arrays.asList(adminRole, userRole), true);
+        Role userRole = roleRepository.findByName(Role.ROLE_USER);
+        Role userSuperRole = roleRepository.findByName(Role.ROLE_SUPER_USER);
+        Role teacherRole = roleRepository.findByName(Role.ROLE_TEACHER);
+        Role adminRole = roleRepository.findByName(Role.ROLE_ADMIN);
+        Collection roles = Arrays.asList(adminRole, userSuperRole, teacherRole, userRole);
+        User admin = userManager.create("Admin", "Admin", "admin@admin.com", "admin", roles, true);
     }
 }
