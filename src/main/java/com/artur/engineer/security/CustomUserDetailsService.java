@@ -20,6 +20,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String usernameOrEmail)
@@ -43,4 +45,5 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return UserPrincipal.create(user);
     }
+
 }

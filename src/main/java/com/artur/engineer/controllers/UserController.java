@@ -80,8 +80,9 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.Normal.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteUser(@PathVariable(value="userId") Long id) throws ApiException {
+    public boolean deleteUser(@PathVariable(value="userId") Long id) throws ApiException {
         userManager.remove(id);
+        return true;
     }
 
     @GetMapping(path = "/{userId}")

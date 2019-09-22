@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 import java.util.Collection;
 
@@ -58,6 +59,7 @@ public class UserManager {
         return this.createOrUpdate(user, userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), userCreate.getPassword(), roleReader.getUserRoles(userCreate.getRole()), true);
     }
 
+    @Transactional
     public void remove(Long id) {
         userRepository.deleteById(id);
     }
