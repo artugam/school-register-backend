@@ -1,24 +1,22 @@
 package com.artur.engineer.payload.user;
 
 import com.artur.engineer.engine.validator.EmailExistsConstraint;
-import com.artur.engineer.engine.validator.PasswordEqualsConstraint;
-import com.artur.engineer.engine.validator.PasswordEqualsValidator;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
  */
-@PasswordEqualsConstraint.List({
-    @PasswordEqualsConstraint(
-            field = "password",
-            fieldMatch = "passwordConfirm",
-            message = "Passwords do not match!"
-    )
-})
+//@PasswordEqualsConstraint.List({
+//    @PasswordEqualsConstraint(
+//            field = "password",
+//            fieldMatch = "passwordConfirm",
+//            message = "Passwords do not match!"
+//    )
+//})
 public class UserCreate {
 
     @NotBlank
@@ -31,13 +29,13 @@ public class UserCreate {
     protected String password;
 
     @NotBlank
-    protected String passwordConfirm;
-
-    @NotBlank
     protected String firstName;
 
     @NotBlank
     protected String lastName;
+
+    @NotNull
+    protected Long role;
 
 
     public String getEmail() {
@@ -56,13 +54,6 @@ public class UserCreate {
         this.password = password;
     }
 
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -78,5 +69,13 @@ public class UserCreate {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Long getRole() {
+        return role;
+    }
+
+    public void setRole(Long role) {
+        this.role = role;
     }
 }
