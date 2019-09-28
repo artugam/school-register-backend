@@ -6,6 +6,7 @@ import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.user.UserCreate;
+import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,24 +40,22 @@ public class UserManager {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
+        if (!password.equals("")) {
+            user.setPassword(passwordEncoder.encode(password));
+        }
         user.setRoles(roles);
         user.setEnabled(enabled);
 
         return userRepository.save(user);
     }
 
-    public User create(String firstName, String lastName, String email, String password) throws ApiException {
-        return this.createOrUpdate(new User(), firstName, lastName, email, password, roleReader.getUserRoleAsCollection(), true);
-    }
-
-    public User create(UserCreate userCreate) throws ApiException {
+    public User create(UserCreateWithPassword userCreate) throws ApiException {
         return this.createOrUpdate(new User(), userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), userCreate.getPassword(), roleReader.getUserRoles(userCreate.getRole()), true);
     }
 
     public User edit(Long id, UserCreate userCreate) throws ApiException {
         User user = userReader.get(id);
-        return this.createOrUpdate(user, userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), userCreate.getPassword(), roleReader.getUserRoles(userCreate.getRole()), true);
+        return this.createOrUpdate(user, userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), "", roleReader.getUserRoles(userCreate.getRole()), true);
     }
 
     @Transactional

@@ -7,6 +7,7 @@ import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.JwtAuthenticationResponse;
 import com.artur.engineer.payload.LoginRequest;
 import com.artur.engineer.payload.user.UserCreate;
+import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.repositories.RoleRepository;
 import com.artur.engineer.repositories.UserRepository;
 import com.artur.engineer.security.CurrentUser;
@@ -71,7 +72,7 @@ public class AuthenticationController {
     @PostMapping(path = "/register")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.Normal.class})
-    public User registerUser(@Valid @RequestBody UserCreate userCreateRequest) throws ApiException {
+    public User registerUser(@Valid @RequestBody UserCreateWithPassword userCreateRequest) throws ApiException {
 
         return userManager.create(userCreateRequest);
     }
