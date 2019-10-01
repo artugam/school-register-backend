@@ -24,7 +24,7 @@ public class RoleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.Normal.class})
+    @JsonView({UserView.class})
     public
     Iterable<Role> getAll() {
         return this.roleRepository.findAll();

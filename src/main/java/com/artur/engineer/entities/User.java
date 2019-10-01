@@ -1,7 +1,6 @@
 package com.artur.engineer.entities;
 
 import com.artur.engineer.engine.views.UserView;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
@@ -12,22 +11,22 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(UserView.Normal.class)
+    @JsonView(UserView.class)
     private Long id;
 
-    @JsonView(UserView.Normal.class)
+    @JsonView(UserView.class)
     private String firstName;
 
-    @JsonView(UserView.Normal.class)
+    @JsonView(UserView.class)
     private String lastName;
 
-    @JsonView({UserView.Normal.class, UserView.class})
+    @JsonView({UserView.class, UserView.class})
     @Column(unique = true)
     private String email;
 
     private String password;
 
-    @JsonView(UserView.Normal.class)
+    @JsonView(UserView.class)
     private boolean enabled;
 
     @ManyToMany
@@ -37,7 +36,7 @@ public class User extends BaseEntity {
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
-    @JsonView(UserView.Normal.class)
+    @JsonView(UserView.class)
     private Collection<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

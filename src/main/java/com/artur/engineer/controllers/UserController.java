@@ -3,8 +3,10 @@ package com.artur.engineer.controllers;
 import com.artur.engineer.engine.exceptions.ApiException;
 import com.artur.engineer.engine.managers.UserManager;
 import com.artur.engineer.engine.readers.UserReader;
+import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.UserView;
 import com.artur.engineer.entities.User;
+import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.repositories.UserRepository;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -37,32 +38,18 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.Normal.class})
-    public
-    Iterable<User> getAll() {
-        return this.userRepository.findAll();
-    }
+//    @JsonView({UserView.class})
+    @JsonView({PagedView.class})
+    public PagedResponse<User> getAll() {
+//        return this.userRepository.findAll();
+//        return this.userRepository.findAll(PageRequest.of(1, 2, Sort.by("firstName").ascending()));
 
-//    @PostMapping(path = "")
-//    public
-//    User create(
-//            @RequestParam("firstName") String firstName,
-//            @RequestParam("lastName") String lastName,
-//            @RequestParam("email") String email,
-//            @RequestParam("password") String password
-//    ) {
-//        try {
-//            return userManager.create(firstName, lastName, email, password);
-//        } catch (ApiException exc) {
-//            throw new ResponseStatusException(
-//                    HttpStatus.BAD_REQUEST, exc.getMessage(), exc);
-//        }
-//
-//    }
+        return userReader.getAllUsers(1,2, "email", "DESC");
+    }
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.Normal.class})
+    @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User createUser(@Valid @RequestBody UserCreateWithPassword userCreateRequest) throws ApiException {
 
@@ -71,7 +58,7 @@ public class UserController {
 
     @PatchMapping(path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.Normal.class})
+    @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User editUser(@PathVariable(value="userId") Long id, @Valid @RequestBody UserCreate userCreateRequest) throws ApiException {
         return userManager.edit(id, userCreateRequest);
@@ -79,7 +66,7 @@ public class UserController {
 
     @DeleteMapping(path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.Normal.class})
+    @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean deleteUser(@PathVariable(value="userId") Long id) throws ApiException {
         userManager.remove(id);
@@ -88,7 +75,7 @@ public class UserController {
 
     @GetMapping(path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.Normal.class})
+    @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User getUser(@PathVariable(value="userId") Long id) throws ApiException {
         return userReader.get(id);
@@ -96,7 +83,7 @@ public class UserController {
 
     @PostMapping(path = "/{userId}/block")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.Normal.class})
+    @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User blockUser(@PathVariable(value="userId") Long id) throws ApiException {
         return userManager.block(id);
@@ -104,7 +91,7 @@ public class UserController {
 
     @PostMapping(path = "/{userId}/unblock")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.Normal.class})
+    @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User unblockUser(@PathVariable(value="userId") Long id) throws ApiException {
         return userManager.unblock(id);
