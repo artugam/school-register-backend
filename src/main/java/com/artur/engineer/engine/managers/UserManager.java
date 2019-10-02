@@ -9,12 +9,10 @@ import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import javax.ws.rs.NotFoundException;
 import java.util.Collection;
 
 /**

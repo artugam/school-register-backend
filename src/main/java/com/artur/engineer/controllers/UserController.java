@@ -9,13 +9,11 @@ import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
-import com.artur.engineer.repositories.UserRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 
 /**
@@ -27,9 +25,6 @@ import javax.validation.Valid;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserReader userReader;
 
     @Autowired
@@ -38,13 +33,15 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-//    @JsonView({UserView.class})
     @JsonView({PagedView.class})
-    public PagedResponse<User> getAll() {
-//        return this.userRepository.findAll();
-//        return this.userRepository.findAll(PageRequest.of(1, 2, Sort.by("firstName").ascending()));
-
-        return userReader.getAllUsers(1,2, "email", "DESC");
+    public PagedResponse<User> getAll(
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "2") Integer records,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @RequestParam(required = false, defaultValue = "") String search
+    ) {
+        return userReader.getAllUsers(page, records, sortField, sortDirection, search);
     }
 
     @PostMapping(path = "")
@@ -52,7 +49,6 @@ public class UserController {
     @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User createUser(@Valid @RequestBody UserCreateWithPassword userCreateRequest) throws ApiException {
-
         return userManager.create(userCreateRequest);
     }
 
@@ -60,7 +56,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public User editUser(@PathVariable(value="userId") Long id, @Valid @RequestBody UserCreate userCreateRequest) throws ApiException {
+    public User editUser(@PathVariable(value = "userId") Long id, @Valid @RequestBody UserCreate userCreateRequest) throws ApiException {
         return userManager.edit(id, userCreateRequest);
     }
 
@@ -68,7 +64,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public boolean deleteUser(@PathVariable(value="userId") Long id) throws ApiException {
+    public boolean deleteUser(@PathVariable(value = "userId") Long id) {
         userManager.remove(id);
         return true;
     }
@@ -77,7 +73,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public User getUser(@PathVariable(value="userId") Long id) throws ApiException {
+    public User getUser(@PathVariable(value = "userId") Long id) {
         return userReader.get(id);
     }
 
@@ -85,7 +81,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public User blockUser(@PathVariable(value="userId") Long id) throws ApiException {
+    public User blockUser(@PathVariable(value = "userId") Long id) {
         return userManager.block(id);
     }
 
@@ -93,7 +89,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public User unblockUser(@PathVariable(value="userId") Long id) throws ApiException {
+    public User unblockUser(@PathVariable(value = "userId") Long id) {
         return userManager.unblock(id);
     }
 

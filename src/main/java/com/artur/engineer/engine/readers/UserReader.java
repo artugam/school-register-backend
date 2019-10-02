@@ -27,23 +27,19 @@ public class UserReader {
         );
     }
 
-    public PagedResponse<User> getAllUsers(int page, int size, String sortField, String direction) {
+    public PagedResponse<User> getAllUsers(int page, int size, String sortField, String direction, String search) {
 
-        Sort.Direction chooseDirection = Sort.Direction.DESC;
-        if (direction.equals("ASC")) {
-            chooseDirection = Sort.Direction.ASC;
+        Sort.Direction chooseDirection = Sort.Direction.ASC;
+        if (direction.equals("DESC")) {
+            chooseDirection = Sort.Direction.DESC;
         }
 
-        Page<User> usersQuery = this.userRepository.findAll(PageRequest.of(page, size, Sort.by(chooseDirection, sortField)));
-        PagedResponse<User> response = new PagedResponse<>(
-                usersQuery.getContent(),
-                usersQuery.getNumber(),
-                usersQuery.getSize(),
-                usersQuery.getTotalElements(),
-                usersQuery.getTotalPages(),
-                usersQuery.isLast()
+        Page<User> query = this.userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(
+                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
+                search,
+                search,
+                search
         );
-
-        return response;
+        return new PagedResponse<>(query);
     }
 }

@@ -3,6 +3,7 @@ package com.artur.engineer.payload;
 
 import com.artur.engineer.engine.views.PagedView;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -36,11 +37,20 @@ public class PagedResponse<T> {
 
     public PagedResponse(List<T> content, int page, int size, long totalElements, int totalPages, boolean last) {
         this.content = content;
-        this.page = page;
+        this.page = page + 1;
         this.size = size;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
         this.last = last;
+    }
+
+    public PagedResponse(Page<T> query) {
+        this.content = query.getContent();
+        this.page = query.getNumber() + 1;
+        this.size = query.getSize();
+        this.totalElements = query.getTotalElements();
+        this.totalPages = query.getTotalPages();
+        this.last = query.isLast();
     }
 
     public List<T> getContent() {
@@ -56,7 +66,7 @@ public class PagedResponse<T> {
     }
 
     public void setPage(int page) {
-        this.page = page;
+        this.page = page + 1;
     }
 
     public int getSize() {

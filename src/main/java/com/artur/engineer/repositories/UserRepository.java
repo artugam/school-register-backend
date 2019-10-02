@@ -21,7 +21,12 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 //    @Query("select u from User u where u.lastname like ?1%")
 //    Collection<User> findByAndSort(String lastname, Sort sort);
 
-    Page<User> findAll(Pageable pageable);
+    Page<User> findByFirstNameContainingOrLastNameContainingOrEmailContaining(
+            Pageable pageable,
+            String firstNameSearch,
+            String lastNameSearch,
+            String emailSearch
+    );
 
 
     void deleteById(Long id);
