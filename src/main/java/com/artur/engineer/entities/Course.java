@@ -1,5 +1,9 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.CourseView;
+import com.artur.engineer.engine.views.UserView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,14 +34,19 @@ public class Course extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(CourseView.class)
     private Long id;
 
+    @JsonView(CourseView.class)
     private String name;
 
+    @JsonView(CourseView.class)
     private String form;
 
+    @JsonView(CourseView.class)
     private String degree;
 
+    @JsonView(CourseView.class)
     private int semesters;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)

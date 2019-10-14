@@ -12,12 +12,11 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
     Optional<Course> findById(Long id);
 
-    Page<Course> findByNameContainingOrFormContainingOrDegreeContainingOrSemestersContaining(
+    Page<Course> findByNameContainingOrFormContainingOrDegreeContaining(
             Pageable pageable,
             String nameSearch,
             String form,
-            String degree,
-            String semesters
+            String degree
     );
 
     void deleteById(Long id);

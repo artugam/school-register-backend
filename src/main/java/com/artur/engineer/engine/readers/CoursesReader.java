@@ -40,9 +40,8 @@ public class CoursesReader {
 //                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
 //                search
 //        );
-        Page<Course> query = this.repository.findByNameContainingOrFormContainingOrDegreeContainingOrSemestersContaining(
+        Page<Course> query = this.repository.findByNameContainingOrFormContainingOrDegreeContaining(
                 PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
-                search,
                 search,
                 search,
                 search
