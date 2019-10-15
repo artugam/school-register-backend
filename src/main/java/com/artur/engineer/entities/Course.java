@@ -1,5 +1,9 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.CourseView;
+import com.artur.engineer.engine.views.UserView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,17 +34,20 @@ public class Course extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(CourseView.class)
     private Long id;
 
+    @JsonView(CourseView.class)
     private String name;
 
+    @JsonView(CourseView.class)
     private String form;
 
+    @JsonView(CourseView.class)
     private String degree;
 
-    public int semesters;
-
-    private int termsAmount;
+    @JsonView(CourseView.class)
+    private int semesters;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Collection<CourseStarted> startedCourses;
@@ -77,14 +84,6 @@ public class Course extends BaseEntity {
             return;
         }
         this.degree = degree;
-    }
-
-    public int getTermsAmount() {
-        return termsAmount;
-    }
-
-    public void setTermsAmount(int termsAmount) {
-        this.termsAmount = termsAmount;
     }
 
     public Collection<CourseStarted> getStartedCourses() {

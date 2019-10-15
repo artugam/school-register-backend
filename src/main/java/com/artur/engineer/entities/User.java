@@ -1,5 +1,8 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.UserView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -8,20 +11,23 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(UserView.class)
     private Long id;
 
+    @JsonView(UserView.class)
     private String firstName;
 
+    @JsonView(UserView.class)
     private String lastName;
 
+    @JsonView({UserView.class, UserView.class})
     @Column(unique = true)
     private String email;
 
     private String password;
 
+    @JsonView(UserView.class)
     private boolean enabled;
-
-    private boolean tokenExpired;
 
     @ManyToMany
     @JoinTable(
@@ -30,10 +36,12 @@ public class User extends BaseEntity {
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
+    @JsonView(UserView.class)
     private Collection<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Grade> grades;
+
 
     @ManyToMany
     @JoinTable(
@@ -44,7 +52,6 @@ public class User extends BaseEntity {
                     name = "started_course_id", referencedColumnName = "id"))
     private Collection<CourseStarted> startedCourses;
 
-    
     @ManyToMany(mappedBy = "teachers")
     private Collection<SubjectSchedule> teachSubjects;
 
@@ -99,14 +106,6 @@ public class User extends BaseEntity {
         this.enabled = enabled;
     }
 
-    public boolean isTokenExpired() {
-        return tokenExpired;
-    }
-
-    public void setTokenExpired(boolean tokenExpired) {
-        this.tokenExpired = tokenExpired;
-    }
-
     public Collection<Role> getRoles() {
         return roles;
     }
@@ -121,5 +120,29 @@ public class User extends BaseEntity {
 
     public void setStartedCourses(Collection<CourseStarted> startedCourses) {
         this.startedCourses = startedCourses;
+    }
+
+    public Collection<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Collection<Grade> grades) {
+        this.grades = grades;
+    }
+
+    public Collection<SubjectSchedule> getTeachSubjects() {
+        return teachSubjects;
+    }
+
+    public void setTeachSubjects(Collection<SubjectSchedule> teachSubjects) {
+        this.teachSubjects = teachSubjects;
+    }
+
+    public Collection<SubjectSchedule> getLearnSubjects() {
+        return learnSubjects;
+    }
+
+    public void setLearnSubjects(Collection<SubjectSchedule> learnSubjects) {
+        this.learnSubjects = learnSubjects;
     }
 }

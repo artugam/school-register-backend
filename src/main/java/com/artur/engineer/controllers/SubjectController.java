@@ -19,6 +19,12 @@ public class SubjectController {
     @GetMapping(path="")
     public @ResponseBody
     Iterable<Subject> getAllSubjects() {
+
+
+
+
+
+
         // This returns a JSON or XML with the users
         return subjectRepository.findAll();
     }

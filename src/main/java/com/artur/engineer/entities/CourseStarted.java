@@ -25,6 +25,9 @@ public class CourseStarted extends BaseEntity {
     @ManyToMany(mappedBy = "startedCourses")
     private Collection<User> users = new HashSet<>();
 
+    @OneToMany(mappedBy = "courseStarted", cascade = CascadeType.ALL)
+    private Collection<SubjectSchedule> subjectSchedules;
+
     public Long getId() {
         return id;
     }
@@ -63,5 +66,13 @@ public class CourseStarted extends BaseEntity {
 
     public void setSemester(int semester) {
         this.semester = semester;
+    }
+
+    public Collection<SubjectSchedule> getSubjectSchedules() {
+        return subjectSchedules;
+    }
+
+    public void setSubjectSchedules(Collection<SubjectSchedule> subjectSchedules) {
+        this.subjectSchedules = subjectSchedules;
     }
 }

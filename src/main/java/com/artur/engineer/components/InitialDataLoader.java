@@ -1,5 +1,6 @@
 package com.artur.engineer.components;
 
+import com.artur.engineer.engine.exceptions.ApiException;
 import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.repositories.RoleRepository;
@@ -21,7 +22,7 @@ abstract public class InitialDataLoader implements
 
     @Override
     @Transactional
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    public void onApplicationEvent(ContextRefreshedEvent event)  {
 
         if (alreadySetup)
             return;
@@ -31,5 +32,5 @@ abstract public class InitialDataLoader implements
     }
 
     @Transactional
-    abstract public void run();
+    abstract public void run() ;
 }
