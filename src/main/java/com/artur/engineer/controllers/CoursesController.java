@@ -2,6 +2,7 @@ package com.artur.engineer.controllers;
 
 import com.artur.engineer.engine.managers.CourseManager;
 import com.artur.engineer.engine.readers.CoursesReader;
+import com.artur.engineer.engine.views.CourseView;
 import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.UserView;
 import com.artur.engineer.entities.Course;
@@ -47,7 +48,7 @@ public class CoursesController {
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.class})
+    @JsonView({CourseView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Course create(@Valid @RequestBody CourseCreate create) {
         return manager.create(create);
@@ -55,7 +56,7 @@ public class CoursesController {
 
     @PatchMapping(path = "/{courseId}")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.class})
+    @JsonView({CourseView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Course edit(@PathVariable(value = "courseId") Long id, @Valid @RequestBody CourseCreate create) {
         return manager.edit(id, create);
@@ -63,7 +64,7 @@ public class CoursesController {
 
     @DeleteMapping(path = "/{courseId}")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.class})
+    @JsonView({CourseView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean deleteUser(@PathVariable(value = "courseId") Long id) {
         manager.remove(id);
@@ -72,7 +73,7 @@ public class CoursesController {
 
     @GetMapping(path = "/{courseId}")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({UserView.class})
+    @JsonView({CourseView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Course getUser(@PathVariable(value = "courseId") Long id) {
         return reader.get(id);
