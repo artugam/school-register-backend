@@ -62,7 +62,7 @@ public class UserInitialDataLoader extends InitialDataLoader implements
 
     @Transactional
     public void createDefaultUserIfNotExist() throws ApiException {
-        if (null != userRepository.findByEmail("user@user.com")) {
+        if (true == userRepository.findByEmail("user@user.com").isPresent()) {
             return;
         }
         Role userRole = roleRepository.findByName(Role.ROLE_USER);
@@ -71,7 +71,7 @@ public class UserInitialDataLoader extends InitialDataLoader implements
 
     @Transactional
     public void createAdminIfNotExist() throws ApiException {
-        if (null != userRepository.findByEmail("admin@admin.com")) {
+        if (true == userRepository.findByEmail("admin@admin.com").isPresent()) {
             return;
         }
         Role userRole = roleRepository.findByName(Role.ROLE_USER);

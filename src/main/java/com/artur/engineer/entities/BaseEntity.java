@@ -1,32 +1,41 @@
 package com.artur.engineer.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import java.util.Date;
 
+@MappedSuperclass
 abstract public class BaseEntity {
 
-    private Date created = new Date();
+    private Date createdAt = new Date();
 
-    private Date updated = new Date();
+    private Date updatedAt = new Date();
 
     @PreUpdate
     public void setLastUpdate() {
-        this.updated = new Date();
+        this.updatedAt = new Date();
     }
 
-    public Date getCreated() {
-        return created;
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = new Date();
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public Date getUpdated() {
-        return updated;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setUpdated(Date updated) {
-        this.updated = updated;
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

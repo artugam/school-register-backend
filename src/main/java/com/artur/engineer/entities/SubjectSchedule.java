@@ -18,10 +18,6 @@ public class SubjectSchedule extends BaseEntity {
     @JoinColumn
     private Subject subject;
 
-    @ManyToOne
-    @JoinColumn
-    private CourseStarted courseStarted;
-
     @ManyToMany
     @JoinTable(
             name = "subject_teachers",
@@ -102,11 +98,4 @@ public class SubjectSchedule extends BaseEntity {
         this.end = end;
     }
 
-    public CourseStarted getCourseStarted() {
-        return courseStarted;
-    }
-
-    public void setCourseStarted(CourseStarted courseStarted) {
-        this.courseStarted = courseStarted;
-    }
 }

@@ -5,15 +5,25 @@ import com.artur.engineer.engine.readers.RoleReader;
 import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
+import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import org.synchronoss.cloud.nio.multipart.Multipart;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
@@ -75,5 +85,40 @@ public class UserManager {
         userRepository.save(user);
 
         return user;
+    }
+
+    public ApiResponse addUsersFromCsv(MultipartFile file) throws IOException, ApiException {
+        BufferedReader br;
+        List<String[]> result = new ArrayList<>();
+        try {
+
+            String line;
+            InputStream is = file.getInputStream();
+            br = new BufferedReader(new InputStreamReader(is));
+            while ((line = br.readLine()) != null) {
+                result.add(line.split(" "));
+            }
+
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
+        List<User> usersList = new ArrayList();
+        for (String[] names : result) {
+            String firstName = names[0];
+            String lastName = names[1];
+
+            User user = new User();
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setEmail(firstName + "." + lastName + "@" + "test.com");
+            user.setPassword("notProvided");
+            user.setRoles(roleReader.getUserRoleAsCollection());
+            user.setEnabled(true);
+            usersList.add(user);
+        }
+        userRepository.saveAll(usersList);
+
+        return new ApiResponse(true, "Studenci zostali dodani do bazy");
     }
 }

@@ -7,10 +7,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "form", "degree"})
+        @UniqueConstraint(columnNames = {"name", "form", "degree", "startDate"})
 })
 public class Course extends BaseEntity {
 
@@ -49,8 +51,17 @@ public class Course extends BaseEntity {
     @JsonView(CourseView.class)
     private int semesters;
 
+    @JsonView(CourseView.class)
+    private Date startDate = new Date();
+
+    @JsonView(CourseView.class)
+    private int currentSemester;
+
+    @ManyToMany(mappedBy = "courses")
+    private Collection<User> users = new HashSet<>();
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Collection<CourseStarted> startedCourses;
+    private Collection<Subject> subjects;
 
     public Long getId() {
         return id;
@@ -69,9 +80,6 @@ public class Course extends BaseEntity {
     }
 
     public void setForm(String form) {
-        if (!Arrays.asList(ALLOWED_FORMS).contains(form)) {
-            return;
-        }
         this.form = form;
     }
 
@@ -80,18 +88,7 @@ public class Course extends BaseEntity {
     }
 
     public void setDegree(String degree) {
-        if (!Arrays.asList(ALLOWED_DEGREES).contains(degree)) {
-            return;
-        }
         this.degree = degree;
-    }
-
-    public Collection<CourseStarted> getStartedCourses() {
-        return startedCourses;
-    }
-
-    public void setStartedCourses(Collection<CourseStarted> startedCourses) {
-        this.startedCourses = startedCourses;
     }
 
     public int getSemesters() {
@@ -100,5 +97,37 @@ public class Course extends BaseEntity {
 
     public void setSemesters(int semesters) {
         this.semesters = semesters;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public int getCurrentSemester() {
+        return currentSemester;
+    }
+
+    public void setCurrentSemester(int currentSemester) {
+        this.currentSemester = currentSemester;
+    }
+
+    public Collection<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Collection<User> users) {
+        this.users = users;
+    }
+
+    public Collection<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Collection<Subject> subjects) {
+        this.subjects = subjects;
     }
 }

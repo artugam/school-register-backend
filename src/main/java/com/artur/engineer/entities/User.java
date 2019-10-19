@@ -45,12 +45,12 @@ public class User extends BaseEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "user_started_course",
+            name = "user_course",
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
-                    name = "started_course_id", referencedColumnName = "id"))
-    private Collection<CourseStarted> startedCourses;
+                    name = "course_id", referencedColumnName = "id"))
+    private Collection<Course> courses;
 
     @ManyToMany(mappedBy = "teachers")
     private Collection<SubjectSchedule> teachSubjects;
@@ -114,12 +114,12 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
-    public Collection<CourseStarted> getStartedCourses() {
-        return startedCourses;
+    public Collection<Course> getCourses() {
+        return courses;
     }
 
-    public void setStartedCourses(Collection<CourseStarted> startedCourses) {
-        this.startedCourses = startedCourses;
+    public void setCourses(Collection<Course> courses) {
+        this.courses = courses;
     }
 
     public Collection<Grade> getGrades() {

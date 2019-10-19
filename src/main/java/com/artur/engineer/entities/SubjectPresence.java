@@ -7,7 +7,7 @@ import java.util.Arrays;
  * @author Artur Pilch <artur.pilch12@gmail.com>
  */
 @Entity
-public class SubjectPresence {
+public class SubjectPresence extends BaseEntity{
 
     public final static String STATUS_PRESENCE_TRUE = "Obecny";
     public final static String STATUS_PRESENCE_LATE = "Spóźniony";
