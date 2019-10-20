@@ -1,22 +1,30 @@
 package com.artur.engineer.controllers;
 
+import com.artur.engineer.engine.exceptions.ApiException;
 import com.artur.engineer.engine.managers.CourseManager;
 import com.artur.engineer.engine.readers.CoursesReader;
+import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.engine.views.CourseView;
 import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.UserView;
 import com.artur.engineer.entities.Course;
+import com.artur.engineer.entities.User;
+import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.course.CourseConfigurationResponse;
 import com.artur.engineer.payload.course.CourseCreate;
+import com.artur.engineer.payload.course.CourseRemoveStudents;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
@@ -28,6 +36,9 @@ public class CoursesController {
 
     @Autowired
     private CoursesReader reader;
+
+    @Autowired
+    private UserReader userReader;
 
     @Autowired
     private CourseManager manager;
@@ -66,7 +77,7 @@ public class CoursesController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({CourseView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public boolean deleteUser(@PathVariable(value = "courseId") Long id) {
+    public boolean deleteCourse(@PathVariable(value = "courseId") Long id) {
         manager.remove(id);
         return true;
     }
@@ -75,15 +86,65 @@ public class CoursesController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({CourseView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Course getUser(@PathVariable(value = "courseId") Long id) {
+    public Course getCourse(@PathVariable(value = "courseId") Long id) {
         return reader.get(id);
     }
 
     @GetMapping(path = "/configuration/options")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public CourseConfigurationResponse getConfiguration()
-    {
+    public CourseConfigurationResponse getConfiguration() {
         return reader.getConfiguration();
     }
+
+    @GetMapping(path = "/{courseId}/students")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    public PagedResponse getCourseUsers(
+            @PathVariable(value = "courseId") Long id,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer records,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @RequestParam(required = false, defaultValue = "") String search
+    ) {
+        return userReader.getAllUsersByCourseId(id, page, records, sortField, sortDirection, search);
+    }
+
+    @DeleteMapping(path = "/{courseId}/students")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ApiResponse deleteCourseUsers(
+            @PathVariable(value = "courseId") Long id,
+            @RequestBody CourseRemoveStudents courseRemoveStudents
+    ) {
+        manager.removeStudentsFromCourse(id, courseRemoveStudents);
+        return new ApiResponse(true, "Users Removed");
+    }
+
+    @PostMapping(path = "/{courseId}/students")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ApiResponse addCourseUsers(
+            @PathVariable(value = "courseId") Long id,
+            @Valid @RequestBody CourseRemoveStudents courseRemoveStudents
+    ) {
+         manager.addStudentsToCourse(id, courseRemoveStudents);
+        return new ApiResponse(true, "Users Added");
+    }
+
+    @GetMapping(path = "/{courseId}/notStudents")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @JsonView({UserView.class})
+    public List<User> getUsersNotInCourse(
+            @PathVariable(value = "courseId") Long id
+    ) {
+        List<User> users = userReader.getUserNotInCourse(id);
+        return users;
+    }
+
 }

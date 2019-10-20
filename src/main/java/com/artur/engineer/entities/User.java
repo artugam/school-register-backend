@@ -122,6 +122,20 @@ public class User extends BaseEntity {
         this.courses = courses;
     }
 
+    public void addCourse(Course course) {
+        if(!this.courses.contains(course)) {
+            this.courses.add(course);
+            course.addUser(this);
+        }
+    }
+
+    public void removeCourse(Course course) {
+        if(this.courses.contains(course)) {
+            this.courses.remove(course);
+            course.removeUser(this);
+        }
+    }
+
     public Collection<Grade> getGrades() {
         return grades;
     }

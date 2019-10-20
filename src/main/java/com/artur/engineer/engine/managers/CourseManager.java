@@ -7,7 +7,10 @@ import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.entities.Course;
 import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
+import com.artur.engineer.exception.ResourceNotFoundException;
+import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.course.CourseCreate;
+import com.artur.engineer.payload.course.CourseRemoveStudents;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.repositories.CourseRepository;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
@@ -31,6 +36,9 @@ public class CourseManager {
 
     @Autowired
     private CoursesReader reader;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public Course createOrUpdate(Course course, String name, String degree, String form, int semesters, Date startDate, int currentSemester) {
 
@@ -55,5 +63,25 @@ public class CourseManager {
     @Transactional
     public void remove(Long id) {
         repository.deleteById(id);
+    }
+
+    public void removeStudentsFromCourse(Long id, CourseRemoveStudents courseRemoveStudents) {
+
+        List<User> users = userRepository.findAllById(courseRemoveStudents.getStudentsIds());
+
+        Optional<Course> courseOptional = repository.findById(id);
+        Course course = courseOptional.get();
+        course.removeUsers(users);
+        repository.save(course);
+    }
+
+    public void addStudentsToCourse(Long id, CourseRemoveStudents courseRemoveStudents) {
+
+        List<User> users = userRepository.findAllById(courseRemoveStudents.getStudentsIds());
+        Optional<Course> courseOptional = repository.findById(id);
+
+        Course course = courseOptional.get();
+        course.addUsers(users);
+        repository.save(course);
     }
 }

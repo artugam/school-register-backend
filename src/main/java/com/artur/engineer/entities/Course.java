@@ -57,7 +57,7 @@ public class Course extends BaseEntity {
     @JsonView(CourseView.class)
     private int currentSemester;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(mappedBy = "courses", cascade = CascadeType.ALL)
     private Collection<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
@@ -121,6 +121,32 @@ public class Course extends BaseEntity {
 
     public void setUsers(Collection<User> users) {
         this.users = users;
+    }
+
+    public void removeUsers(Collection<User> users) {
+        for (User user : users) {
+            this.removeUser(user);
+        }
+    }
+
+    public void removeUser(User user) {
+        if (this.users.contains(user)) {
+            this.users.remove(user);
+            user.removeCourse(this);
+        }
+    }
+
+    public void addUsers(Collection<User> users) {
+        for (User user : users) {
+            this.addUser(user);
+        }
+    }
+
+    public void addUser(User user) {
+        if (!this.users.contains(user)) {
+            this.users.add(user);
+            user.addCourse(this);
+        }
     }
 
     public Collection<Subject> getSubjects() {
