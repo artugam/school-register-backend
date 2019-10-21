@@ -1,26 +1,16 @@
 package com.artur.engineer.engine.managers;
 
-import com.artur.engineer.engine.exceptions.ApiException;
 import com.artur.engineer.engine.readers.CoursesReader;
-import com.artur.engineer.engine.readers.RoleReader;
-import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.entities.Course;
-import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
-import com.artur.engineer.exception.ResourceNotFoundException;
-import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.course.CourseCreate;
-import com.artur.engineer.payload.course.CourseRemoveStudents;
-import com.artur.engineer.payload.user.UserCreate;
-import com.artur.engineer.payload.user.UserCreateWithPassword;
+import com.artur.engineer.payload.course.StudentsIds;
 import com.artur.engineer.repositories.CourseRepository;
 import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +55,7 @@ public class CourseManager {
         repository.deleteById(id);
     }
 
-    public void removeStudentsFromCourse(Long id, CourseRemoveStudents courseRemoveStudents) {
+    public void removeStudentsFromCourse(Long id, StudentsIds courseRemoveStudents) {
 
         List<User> users = userRepository.findAllById(courseRemoveStudents.getStudentsIds());
 
@@ -75,7 +65,7 @@ public class CourseManager {
         repository.save(course);
     }
 
-    public void addStudentsToCourse(Long id, CourseRemoveStudents courseRemoveStudents) {
+    public void addStudentsToCourse(Long id, StudentsIds courseRemoveStudents) {
 
         List<User> users = userRepository.findAllById(courseRemoveStudents.getStudentsIds());
         Optional<Course> courseOptional = repository.findById(id);

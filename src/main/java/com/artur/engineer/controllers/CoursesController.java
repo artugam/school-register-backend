@@ -1,9 +1,9 @@
 package com.artur.engineer.controllers;
 
-import com.artur.engineer.engine.exceptions.ApiException;
 import com.artur.engineer.engine.managers.CourseManager;
 import com.artur.engineer.engine.readers.CoursesReader;
 import com.artur.engineer.engine.readers.UserReader;
+import com.artur.engineer.engine.views.ApiResponseView;
 import com.artur.engineer.engine.views.CourseView;
 import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.UserView;
@@ -13,17 +13,14 @@ import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.course.CourseConfigurationResponse;
 import com.artur.engineer.payload.course.CourseCreate;
-import com.artur.engineer.payload.course.CourseRemoveStudents;
+import com.artur.engineer.payload.course.StudentsIds;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -118,7 +115,7 @@ public class CoursesController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ApiResponse deleteCourseUsers(
             @PathVariable(value = "courseId") Long id,
-            @RequestBody CourseRemoveStudents courseRemoveStudents
+            @RequestBody StudentsIds courseRemoveStudents
     ) {
         manager.removeStudentsFromCourse(id, courseRemoveStudents);
         return new ApiResponse(true, "Users Removed");
@@ -126,14 +123,14 @@ public class CoursesController {
 
     @PostMapping(path = "/{courseId}/students")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({PagedView.class})
+    @JsonView({ApiResponseView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ApiResponse addCourseUsers(
             @PathVariable(value = "courseId") Long id,
-            @Valid @RequestBody CourseRemoveStudents courseRemoveStudents
+            @Valid @RequestBody StudentsIds studentsIds
     ) {
-         manager.addStudentsToCourse(id, courseRemoveStudents);
-        return new ApiResponse(true, "Users Added");
+         manager.addStudentsToCourse(id, studentsIds);
+         return new ApiResponse(true, "Users Added");
     }
 
     @GetMapping(path = "/{courseId}/notStudents")

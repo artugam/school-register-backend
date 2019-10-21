@@ -7,9 +7,8 @@ import java.util.List;
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
  */
-public class CourseRemoveStudents {
+public class StudentsIds {
 
-    @NotBlank
     private List<Long> studentsIds;
 
     public List<Long> getStudentsIds() {

@@ -43,11 +43,19 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     List<User> findAllById(List<Long> userIds);
 
+    List<User> findAll();
+
 
 //    @Query("select c from Course u LEFT JOIN u.users c WHERE c.id NOT IN :course OR c.courses IS EMPTY ")
 //    List<User> findAllByCoursesIsNot(@Param("courses") Long course);
-    @Query("SELECT u FROM User u LEFT JOIN u.roles r WHERE r.name IN (:roles)")
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name NOT IN (:roles)")
     List<User> findAllByRolesNameIsNotIn(@Param("roles") List<String> roles);
+//    @Query(
+//        value = "SELECT * " +
+//                "FROM user u " +
+//                "INNER JOIN user_role ur ON u",
+//        nativeQuery = true)
+
 
 
 
