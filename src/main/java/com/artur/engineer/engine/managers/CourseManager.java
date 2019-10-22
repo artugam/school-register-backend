@@ -57,7 +57,7 @@ public class CourseManager {
 
     public void removeStudentsFromCourse(Long id, StudentsIds courseRemoveStudents) {
 
-        List<User> users = userRepository.findAllById(courseRemoveStudents.getStudentsIds());
+        List<User> users = userRepository.findAllByIdIn(courseRemoveStudents.getStudentsIds());
 
         Optional<Course> courseOptional = repository.findById(id);
         Course course = courseOptional.get();
@@ -67,7 +67,7 @@ public class CourseManager {
 
     public void addStudentsToCourse(Long id, StudentsIds courseRemoveStudents) {
 
-        List<User> users = userRepository.findAllById(courseRemoveStudents.getStudentsIds());
+        List<User> users = userRepository.findAllByIdIn(courseRemoveStudents.getStudentsIds());
         Optional<Course> courseOptional = repository.findById(id);
 
         Course course = courseOptional.get();

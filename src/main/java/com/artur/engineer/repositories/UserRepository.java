@@ -41,9 +41,13 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     void deleteById(Long id);
 
-    List<User> findAllById(List<Long> userIds);
+    List<User> findAllByIdInOrderByLastNameDesc(List<Long> userIds);
+
+    List<User> findAllByIdIn(List<Long> userIds);
 
     List<User> findAll();
+
+    List<User> findAllByOrderByLastNameAsc();
 
 
 //    @Query("select c from Course u LEFT JOIN u.users c WHERE c.id NOT IN :course OR c.courses IS EMPTY ")

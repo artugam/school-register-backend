@@ -76,7 +76,7 @@ public class UserReader {
     }
 
     public List<User> getUserNotInCourse(Long id) {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllByOrderByLastNameAsc();
         List<Role> roles = roleRepository.findAllByNameIn(Arrays.asList(Role.ROLE_ADMIN, Role.ROLE_TEACHER));
         Course course    = courseRepository.findById(id).get();
 
