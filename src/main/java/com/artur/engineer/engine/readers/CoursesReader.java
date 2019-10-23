@@ -47,13 +47,13 @@ public class CoursesReader {
         return new PagedResponse<>(query);
     }
 
-//    public PagedResponse<User> getStudents(Long courseId, int page, int size, String sortField, String direction, String search) {
+//    public PagedResponse<UserIdPayload> getStudents(Long courseId, int page, int size, String sortField, String direction, String search) {
 //        Sort.Direction chooseDirection = Sort.Direction.ASC;
 //        if (direction.equals("DESC")) {
 //            chooseDirection = Sort.Direction.DESC;
 //        }
 //
-//        Page<User> query = this.repository.findStudentsByCourseId(
+//        Page<UserIdPayload> query = this.repository.findStudentsByCourseId(
 //                courseId,
 //                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
 //

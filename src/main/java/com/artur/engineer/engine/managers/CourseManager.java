@@ -42,7 +42,7 @@ public class CourseManager {
         return repository.save(course);
     }
 
-    public Course create(CourseCreate create)  {
+    public Course create(CourseCreate create) {
         return this.createOrUpdate(new Course(), create.getName(), create.getDegree(), create.getForm(), create.getSemesters(), create.getStartDate(), 1);
     }
 
@@ -73,5 +73,23 @@ public class CourseManager {
         Course course = courseOptional.get();
         course.addUsers(users);
         repository.save(course);
+    }
+
+    public Course setForeman(Long courseId, Long userId) {
+        User user = userRepository.findById(userId).get();
+        Course course = repository.findById(courseId).get();
+
+        course.setForeman(user);
+        repository.save(course);
+
+        return course;
+    }
+
+    public Course removeForeman(Long courseId)
+    {
+        Course course = repository.findById(courseId).get();
+        course.setForeman(null);
+
+        return course;
     }
 }

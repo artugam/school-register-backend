@@ -14,6 +14,7 @@ import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.course.CourseConfigurationResponse;
 import com.artur.engineer.payload.course.CourseCreate;
 import com.artur.engineer.payload.course.StudentsIds;
+import com.artur.engineer.payload.user.UserIdPayload;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -142,6 +143,27 @@ public class CoursesController {
     ) {
         List<User> users = userReader.getUserNotInCourse(id);
         return users;
+    }
+
+    @PostMapping(path = "/{courseId}/foreman")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @JsonView({UserView.class})
+    public Course addCourseForeman(
+            @PathVariable(value = "courseId") Long id,
+            @Valid @RequestBody UserIdPayload userIdPayload
+    ) {
+        return manager.setForeman(id, userIdPayload.getUserId());
+    }
+
+    @DeleteMapping(path = "/{courseId}/foreman")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @JsonView({UserView.class})
+    public Course removeCourseForeman(
+            @PathVariable(value = "courseId") Long id
+    ) {
+        return manager.removeForeman(id);
     }
 
 }

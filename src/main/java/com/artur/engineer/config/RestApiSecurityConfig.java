@@ -97,7 +97,7 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
     /*@Bean
     public UserDetailsService userDetailsService() {
         //ok for demo
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
+        UserIdPayload.UserBuilder users = UserIdPayload.withDefaultPasswordEncoder();
 
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         manager.createUser(users.username("user").password("password").roles("USER").build());

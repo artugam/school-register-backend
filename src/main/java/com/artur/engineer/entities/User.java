@@ -52,6 +52,9 @@ public class User extends BaseEntity {
                     name = "course_id", referencedColumnName = "id"))
     private Collection<Course> courses;
 
+    @OneToMany(mappedBy = "foreman", cascade = CascadeType.ALL)
+    private Collection<Course> foremanCourses;
+
     @ManyToMany(mappedBy = "teachers")
     private Collection<SubjectSchedule> teachSubjects;
 
@@ -158,5 +161,27 @@ public class User extends BaseEntity {
 
     public void setLearnSubjects(Collection<SubjectSchedule> learnSubjects) {
         this.learnSubjects = learnSubjects;
+    }
+
+    public Collection<Course> getForemanCourses() {
+        return foremanCourses;
+    }
+
+    public void setForemanCourses(Collection<Course> foremanCourses) {
+        this.foremanCourses = foremanCourses;
+    }
+
+    public void addForemanCourse(Course course) {
+        if(!this.foremanCourses.contains(course)) {
+            this.foremanCourses.add(course);
+            course.setForeman(this);
+        }
+    }
+
+    public void removeForemanCourse(Course course) {
+        if(this.foremanCourses.contains(course)) {
+            this.foremanCourses.remove(course);
+            course.setForeman(null);
+        }
     }
 }

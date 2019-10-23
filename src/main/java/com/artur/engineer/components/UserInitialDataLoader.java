@@ -66,7 +66,7 @@ public class UserInitialDataLoader extends InitialDataLoader implements
             return;
         }
         Role userRole = roleRepository.findByName(Role.ROLE_USER);
-        User user = userManager.createOrUpdate(new User(),"User", "User", "user@user.com", "user", Arrays.asList(userRole), true);
+        User user = userManager.createOrUpdate(new User(),"UserIdPayload", "UserIdPayload", "user@user.com", "user", Arrays.asList(userRole), true);
     }
 
     @Transactional

@@ -37,7 +37,7 @@ public class UserReader {
 
     public User get(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("User not found with id : " + id)
+                () -> new NotFoundException("UserIdPayload not found with id : " + id)
         );
     }
 
@@ -48,7 +48,7 @@ public class UserReader {
             chooseDirection = Sort.Direction.DESC;
         }
 
-//        Page<User> query = this.userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(
+//        Page<UserIdPayload> query = this.userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(
 //                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
 //                search
 //        );

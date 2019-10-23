@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EmailExistsConstraint {
-    String message() default "User with provided email exists";
+    String message() default "UserIdPayload with provided email exists";
 
     Class<?>[] groups() default {};
 
