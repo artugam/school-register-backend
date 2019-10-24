@@ -6,6 +6,7 @@ import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.UserView;
 import com.artur.engineer.entities.User;
+import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
@@ -14,7 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.Valid;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
@@ -91,6 +97,13 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User unblockUser(@PathVariable(value = "userId") Long id) {
         return userManager.unblock(id);
+    }
+
+    @PostMapping(path = "/upload/csv")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ApiResponse uploadUsersCsvFile(@RequestParam("file") MultipartFile file) throws ApiException, IOException{
+        return userManager.addUsersFromCsv(file);
     }
 
 

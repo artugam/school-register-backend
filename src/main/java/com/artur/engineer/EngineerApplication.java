@@ -12,11 +12,4 @@ public class EngineerApplication {
     public static void main(String[] args) {
         SpringApplication.run(EngineerApplication.class, args);
     }
-
-    @RequestMapping("/hello")
-    public String sayHello()
-    {
-        return "hello";
-    }
-
 }

@@ -2,6 +2,7 @@ package com.artur.engineer.payload.course;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 
 /**
@@ -21,35 +22,32 @@ public class CourseCreate {
     @NotNull
     private int semesters;
 
+    @NotNull
+    private Date startDate;
+
+    private int currentSemester;
+
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getForm() {
         return form;
     }
 
-    public void setForm(String form) {
-        this.form = form;
-    }
-
     public String getDegree() {
         return degree;
-    }
-
-    public void setDegree(String degree) {
-        this.degree = degree;
     }
 
     public int getSemesters() {
         return semesters;
     }
 
-    public void setSemesters(int semesters) {
-        this.semesters = semesters;
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public int getCurrentSemester() {
+        return currentSemester;
     }
 }

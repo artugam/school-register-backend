@@ -1,6 +1,7 @@
 package com.artur.engineer.engine.readers;
 
 import com.artur.engineer.entities.Course;
+import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.course.CourseConfigurationResponse;
 import com.artur.engineer.repositories.CourseRepository;
@@ -36,10 +37,7 @@ public class CoursesReader {
             chooseDirection = Sort.Direction.DESC;
         }
 
-//        Page<User> query = this.userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(
-//                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
-//                search
-//        );
+//        Page<Course> query = this.repository.findByNameContainingOrFormContainingOrDegreeContainingOrSemestersContainingOrStartDateContaining(
         Page<Course> query = this.repository.findByNameContainingOrFormContainingOrDegreeContaining(
                 PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
                 search,
@@ -49,6 +47,23 @@ public class CoursesReader {
         return new PagedResponse<>(query);
     }
 
+//    public PagedResponse<UserIdPayload> getStudents(Long courseId, int page, int size, String sortField, String direction, String search) {
+//        Sort.Direction chooseDirection = Sort.Direction.ASC;
+//        if (direction.equals("DESC")) {
+//            chooseDirection = Sort.Direction.DESC;
+//        }
+//
+//        Page<UserIdPayload> query = this.repository.findStudentsByCourseId(
+//                courseId,
+//                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
+//
+////                ,
+////                search,
+////                search
+//        );
+//        return new PagedResponse<>(query);
+//    }
+
     public CourseConfigurationResponse getConfiguration() {
         CourseConfigurationResponse configuration = new CourseConfigurationResponse();
         configuration.setDegrees(Arrays.asList(Course.ALLOWED_DEGREES));
@@ -56,4 +71,5 @@ public class CoursesReader {
 
         return configuration;
     }
+
 }

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Entity
-public class Subject {
+public class Subject extends BaseEntity{
 
     public final static String GRADE_TYPE_PASSED = "Zaliczenie";
     public final static String GRADE_TYPE_PASSED_WITH_GRADE = "Zaliczenie na ocene";
@@ -32,6 +32,10 @@ public class Subject {
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private Collection<SubjectSchedule> subjectSchedule;
+
+    @ManyToOne
+    @JoinColumn
+    private Course course;
 
     public Integer getId() {
         return id;
@@ -82,5 +86,13 @@ public class Subject {
 
     public void setSubjectSchedule(Collection<SubjectSchedule> subjectSchedule) {
         this.subjectSchedule = subjectSchedule;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 }

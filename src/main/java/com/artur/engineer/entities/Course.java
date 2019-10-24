@@ -1,16 +1,19 @@
 package com.artur.engineer.entities;
 
 import com.artur.engineer.engine.views.CourseView;
+import com.artur.engineer.engine.views.CourseWithUserView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "form", "degree"})
+        @UniqueConstraint(columnNames = {"name", "form", "degree", "startDate"})
 })
 public class Course extends BaseEntity {
 
@@ -34,23 +37,36 @@ public class Course extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private Long id;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private String name;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private String form;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private String degree;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private int semesters;
 
+    @JsonView({CourseView.class, CourseWithUserView.class})
+    private Date startDate = new Date();
+
+    @JsonView({CourseView.class, CourseWithUserView.class})
+    private int currentSemester;
+
+    @ManyToOne
+    @JsonView({CourseView.class, CourseWithUserView.class})
+    private User foreman;
+
+    @ManyToMany(mappedBy = "courses", cascade = CascadeType.ALL)
+    private Collection<User> users = new HashSet<>();
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Collection<CourseStarted> startedCourses;
+    private Collection<Subject> subjects;
 
     public Long getId() {
         return id;
@@ -69,9 +85,6 @@ public class Course extends BaseEntity {
     }
 
     public void setForm(String form) {
-        if (!Arrays.asList(ALLOWED_FORMS).contains(form)) {
-            return;
-        }
         this.form = form;
     }
 
@@ -80,18 +93,7 @@ public class Course extends BaseEntity {
     }
 
     public void setDegree(String degree) {
-        if (!Arrays.asList(ALLOWED_DEGREES).contains(degree)) {
-            return;
-        }
         this.degree = degree;
-    }
-
-    public Collection<CourseStarted> getStartedCourses() {
-        return startedCourses;
-    }
-
-    public void setStartedCourses(Collection<CourseStarted> startedCourses) {
-        this.startedCourses = startedCourses;
     }
 
     public int getSemesters() {
@@ -100,5 +102,79 @@ public class Course extends BaseEntity {
 
     public void setSemesters(int semesters) {
         this.semesters = semesters;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public int getCurrentSemester() {
+        return currentSemester;
+    }
+
+    public void setCurrentSemester(int currentSemester) {
+        this.currentSemester = currentSemester;
+    }
+
+    public Collection<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Collection<User> users) {
+        this.users = users;
+    }
+
+    public void removeUsers(Collection<User> users) {
+        for (User user : users) {
+            this.removeUser(user);
+        }
+    }
+
+    public void removeUser(User user) {
+        if (this.users.contains(user)) {
+            this.users.remove(user);
+            user.removeCourse(this);
+        }
+    }
+
+    public void addUsers(Collection<User> users) {
+        for (User user : users) {
+            this.addUser(user);
+        }
+    }
+
+    public void addUser(User user) {
+        if (!this.users.contains(user)) {
+            this.users.add(user);
+            user.addCourse(this);
+        }
+    }
+
+    public Collection<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Collection<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public User getForeman() {
+        return foreman;
+    }
+
+    public void setForeman(User foreman) {
+        this.unsetForeman();
+        this.foreman = foreman;
+        foreman.addCourse(this);
+    }
+
+    public void unsetForeman() {
+        if(null != this.foreman) {
+            this.foreman.removeCourse(this);
+        }
     }
 }
