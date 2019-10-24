@@ -3,10 +3,7 @@ package com.artur.engineer.controllers;
 import com.artur.engineer.engine.managers.CourseManager;
 import com.artur.engineer.engine.readers.CoursesReader;
 import com.artur.engineer.engine.readers.UserReader;
-import com.artur.engineer.engine.views.ApiResponseView;
-import com.artur.engineer.engine.views.CourseView;
-import com.artur.engineer.engine.views.PagedView;
-import com.artur.engineer.engine.views.UserView;
+import com.artur.engineer.engine.views.*;
 import com.artur.engineer.entities.Course;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.ApiResponse;
@@ -82,7 +79,7 @@ public class CoursesController {
 
     @GetMapping(path = "/{courseId}")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({CourseView.class})
+    @JsonView({CourseWithUserView.class})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Course getCourse(@PathVariable(value = "courseId") Long id) {
         return reader.get(id);
@@ -148,7 +145,7 @@ public class CoursesController {
     @PostMapping(path = "/{courseId}/foreman")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @JsonView({UserView.class})
+    @JsonView({CourseView.class})
     public Course addCourseForeman(
             @PathVariable(value = "courseId") Long id,
             @Valid @RequestBody UserIdPayload userIdPayload

@@ -1,6 +1,7 @@
 package com.artur.engineer.entities;
 
 import com.artur.engineer.engine.views.CourseView;
+import com.artur.engineer.engine.views.CourseWithUserView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -36,29 +37,29 @@ public class Course extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private Long id;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private String name;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private String form;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private String degree;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private int semesters;
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private Date startDate = new Date();
 
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private int currentSemester;
 
     @ManyToOne
-    @JsonView(CourseView.class)
+    @JsonView({CourseView.class, CourseWithUserView.class})
     private User foreman;
 
     @ManyToMany(mappedBy = "courses", cascade = CascadeType.ALL)

@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
  */
 public class UserIdPayload {
 
-    @NotBlank
     @NotNull
     protected Long userId;
 
