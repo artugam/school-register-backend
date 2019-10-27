@@ -66,6 +66,9 @@ public class Course extends BaseEntity {
     private Collection<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Collection<CourseGroup> groups;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Collection<Subject> subjects;
 
     public Long getId() {
@@ -176,5 +179,13 @@ public class Course extends BaseEntity {
         if(null != this.foreman) {
             this.foreman.removeCourse(this);
         }
+    }
+
+    public Collection<CourseGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Collection<CourseGroup> groups) {
+        this.groups = groups;
     }
 }
