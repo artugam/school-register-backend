@@ -52,6 +52,15 @@ public class User extends BaseEntity {
                     name = "course_id", referencedColumnName = "id"))
     private Collection<Course> courses;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_courseGroup",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "course_group_id", referencedColumnName = "id"))
+    private Collection<CourseGroup> groups;
+
     @OneToMany(mappedBy = "foreman", cascade = CascadeType.ALL)
     private Collection<Course> foremanCourses;
 
@@ -182,6 +191,28 @@ public class User extends BaseEntity {
         if(this.foremanCourses.contains(course)) {
             this.foremanCourses.remove(course);
             course.setForeman(null);
+        }
+    }
+
+    public Collection<CourseGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Collection<CourseGroup> groups) {
+        this.groups = groups;
+    }
+
+    public void addGroup(CourseGroup group) {
+        if(!this.groups.contains(group)) {
+            this.groups.add(group);
+            group.addUser(this);
+        }
+    }
+
+    public void removeGroup(CourseGroup group) {
+        if(this.groups.contains(group)) {
+            this.groups.remove(group);
+            group.removeUser(this);
         }
     }
 }

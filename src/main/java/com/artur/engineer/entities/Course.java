@@ -176,7 +176,7 @@ public class Course extends BaseEntity {
     }
 
     public void unsetForeman() {
-        if(null != this.foreman) {
+        if (null != this.foreman) {
             this.foreman.removeCourse(this);
         }
     }
@@ -187,5 +187,19 @@ public class Course extends BaseEntity {
 
     public void setGroups(Collection<CourseGroup> groups) {
         this.groups = groups;
+    }
+
+    public void addGroup(CourseGroup group) {
+        if (!this.groups.contains(group)) {
+            this.groups.add(group);
+            group.setCourse(this);
+        }
+    }
+
+    public void removeGroup(CourseGroup group) {
+        if (this.groups.contains(group)) {
+            this.groups.remove(group);
+            group.setCourse(null);
+        }
     }
 }

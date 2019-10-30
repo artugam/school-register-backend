@@ -5,6 +5,7 @@ import com.artur.engineer.engine.readers.CoursesReader;
 import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.engine.views.*;
 import com.artur.engineer.entities.Course;
+import com.artur.engineer.entities.CourseGroup;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;
@@ -152,15 +153,4 @@ public class CoursesController {
     ) {
         return manager.setForeman(id, userIdPayload.getUserId());
     }
-
-    @DeleteMapping(path = "/{courseId}/foreman")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @JsonView({UserView.class})
-    public Course removeCourseForeman(
-            @PathVariable(value = "courseId") Long id
-    ) {
-        return manager.removeForeman(id);
-    }
-
 }
