@@ -1,7 +1,6 @@
 package com.artur.engineer.entities;
 
-import com.artur.engineer.engine.views.CourseView;
-import com.artur.engineer.engine.views.CourseWithUserView;
+import com.artur.engineer.engine.views.CourseGroupView;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
@@ -16,17 +15,20 @@ public class CourseGroup extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseGroupView.class})
     private Long id;
 
 
+    @JsonView({CourseGroupView.class})
     private String name;
 
     @ManyToOne
     @JoinColumn
+    @JsonView({CourseGroupView.class})
     private Course course;
 
-    @ManyToMany(mappedBy = "courses", cascade = CascadeType.ALL)
+    @JsonView({CourseGroupView.class})
+    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
     private Collection<User> users = new HashSet<>();
 
 
@@ -57,14 +59,14 @@ public class CourseGroup extends BaseEntity {
 
 
     public void addUser(User user) {
-        if(!this.users.contains(user)) {
+        if (!this.users.contains(user)) {
             this.users.add(user);
             user.addGroup(this);
         }
     }
 
     public void removeUser(User user) {
-        if(!this.users.contains(user)) {
+        if (!this.users.contains(user)) {
             this.users.add(user);
             user.removeGroup(this);
         }

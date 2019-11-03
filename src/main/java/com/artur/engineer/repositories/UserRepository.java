@@ -18,13 +18,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     Optional<User> findById(Long id);
 
-//    @Query("select u from UserIdPayload u where u.lastname like ?1%")
-//    Collection<UserIdPayload> findByAndSort(String lastname, Sort sort);
-
-    //    @Query("SELECT u FROM UserIdPayload u INNER JOIN u.roles r WHERE u.firstName LIKE %:search% OR u.lastName LIKE %:search%")
-//    Page<UserIdPayload> findByFirstNameContainingOrLastNameContainingOrEmailContaining(Pageable pageable, @Param("search") String search);
-//    UserIdPayload findByLastnameOrFirstname(Pageable pageable, @Param("search") String lastname);
-//
     Page<User> findByFirstNameContainingOrLastNameContainingOrEmailContaining(
             Pageable pageable,
             String firstNameSearch,
@@ -39,9 +32,14 @@ public interface UserRepository extends CrudRepository<User, Integer> {
             Pageable pageable
     );
 
-    void deleteById(Long id);
+    @Query("select u from User u join u.groups c where c.id = :courseGroupId AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
+    Page<User> findAllByCourseGroupId(
+            @Param("courseGroupId") Long courseGroupId,
+            @Param("search") String search,
+            Pageable pageable
+    );
 
-    List<User> findAllByIdInOrderByLastNameDesc(List<Long> userIds);
+    void deleteById(Long id);
 
     List<User> findAllByIdIn(List<Long> userIds);
 
@@ -49,19 +47,4 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     List<User> findAllByOrderByLastNameAsc();
 
-
-//    @Query("select c from Course u LEFT JOIN u.users c WHERE c.id NOT IN :course OR c.courses IS EMPTY ")
-//    List<UserIdPayload> findAllByCoursesIsNot(@Param("courses") Long course);
-    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name NOT IN (:roles)")
-    List<User> findAllByRolesNameIsNotIn(@Param("roles") List<String> roles);
-//    @Query(
-//        value = "SELECT * " +
-//                "FROM user u " +
-//                "INNER JOIN user_role ur ON u",
-//        nativeQuery = true)
-
-
-
-
-//    List<UserIdPayload> findAllByCoursesIdIsNot(Long courseId);
 }

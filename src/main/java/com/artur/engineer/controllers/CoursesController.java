@@ -1,6 +1,7 @@
 package com.artur.engineer.controllers;
 
 import com.artur.engineer.engine.managers.CourseManager;
+import com.artur.engineer.engine.readers.CourseGroupReader;
 import com.artur.engineer.engine.readers.CoursesReader;
 import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.engine.views.*;
@@ -35,6 +36,9 @@ public class CoursesController {
 
     @Autowired
     private UserReader userReader;
+
+    @Autowired
+    private CourseGroupReader groupReader;
 
     @Autowired
     private CourseManager manager;
@@ -152,5 +156,20 @@ public class CoursesController {
             @Valid @RequestBody UserIdPayload userIdPayload
     ) {
         return manager.setForeman(id, userIdPayload.getUserId());
+    }
+
+    @GetMapping(path = "/{courseId}/groups")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    public PagedResponse getCourseGroups(
+            @PathVariable(value = "courseId") Long id,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer records,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @RequestParam(required = false, defaultValue = "") String search
+    ) {
+        return groupReader.getGroupsByCourseId(id, page, records, sortField, sortDirection, search);
     }
 }

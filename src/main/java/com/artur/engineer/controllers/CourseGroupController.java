@@ -23,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,8 +40,7 @@ public class CourseGroupController {
     @Autowired
     private CourseGroupManager manager;
 
-
-    @PostMapping(path = "/")
+    @PostMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_SUPER_USER')")
     @JsonView({CourseView.class})
@@ -71,7 +71,35 @@ public class CourseGroupController {
         return new ApiResponse(true, "Grupa została usunięta");
     }
 
+    @GetMapping(path = "/{groupId}/students")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @JsonView({PagedView.class})
+    public PagedResponse getCourseUsers(
+            @PathVariable(value = "groupId") Long id,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer records,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @RequestParam(required = false, defaultValue = "") String search
+    ) {
+        return reader.getStudents(id, page, records, sortField, sortDirection, search);
+    }
+
+
+
     @PostMapping(path = "/{groupId}/students")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @JsonView({CourseView.class})
+    public CourseGroup add(
+            @PathVariable(value = "groupId") Long id,
+            @Valid @RequestBody StudentsIds payload
+    ) {
+        return manager.setStudents(id, payload);
+    }
+
+    @DeleteMapping(path = "/{groupId}/students")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_SUPER_USER')")
     @JsonView({CourseView.class})
@@ -79,6 +107,6 @@ public class CourseGroupController {
             @PathVariable(value = "groupId") Long id,
             @Valid @RequestBody StudentsIds payload
     ) {
-        return manager.setStudents(id, payload);
+        return manager.deleteStudents(id, payload);
     }
 }

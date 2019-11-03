@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -43,19 +44,36 @@ public class CourseGroupReader {
         );
     }
 
-    public PagedResponse<User> getAllUsers(int page, int size, String sortField, String direction, String search) {
+
+    public PagedResponse<User> getStudents(Long courseGroupId, int page, int size, String sortField, String direction, String search) {
 
         Sort.Direction chooseDirection = Sort.Direction.ASC;
         if (direction.equals("DESC")) {
             chooseDirection = Sort.Direction.DESC;
         }
 
-        Page<User> query = this.userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(
-                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
+        Page<User> query = userRepository.findAllByCourseGroupId(
+                courseGroupId,
                 search,
-                search,
-                search
+                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
         );
+
+        return new PagedResponse<>(query);
+    }
+
+    public PagedResponse<CourseGroup> getGroupsByCourseId(Long courseId, int page, int size, String sortField, String direction, String search) {
+        Sort.Direction chooseDirection = Sort.Direction.ASC;
+        if (direction.equals("DESC")) {
+            chooseDirection = Sort.Direction.DESC;
+        }
+
+        Page<CourseGroup> query = repository.findAllByCourseId(
+                courseId,
+                search,
+                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
+        );
+
+
         return new PagedResponse<>(query);
     }
 }

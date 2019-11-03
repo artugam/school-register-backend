@@ -68,4 +68,15 @@ public class CourseGroupManager {
         return courseGroup;
     }
 
+    public CourseGroup deleteStudents(Long id, StudentsIds payload) {
+
+        CourseGroup courseGroup = reader.get(id);
+        for (User user : userRepository.findAllByIdIn(payload.getStudentsIds())) {
+            courseGroup.removeUser(user);
+        }
+
+        repository.save(courseGroup);
+
+        return courseGroup;
+    }
 }
