@@ -170,16 +170,10 @@ public class Course extends BaseEntity {
     }
 
     public void setForeman(User foreman) {
-        this.unsetForeman();
         this.foreman = foreman;
         foreman.addCourse(this);
     }
 
-    public void unsetForeman() {
-        if (null != this.foreman) {
-            this.foreman.removeCourse(this);
-        }
-    }
 
     public Collection<CourseGroup> getGroups() {
         return groups;

@@ -71,6 +71,16 @@ public class CourseGroupController {
         return new ApiResponse(true, "Grupa została usunięta");
     }
 
+    @GetMapping(path = "/{groupId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @JsonView({PagedView.class})
+    public CourseGroup getCourseUsers(
+            @PathVariable(value = "groupId") Long id
+    ) {
+        return reader.get(id);
+    }
+
     @GetMapping(path = "/{groupId}/students")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_SUPER_USER')")

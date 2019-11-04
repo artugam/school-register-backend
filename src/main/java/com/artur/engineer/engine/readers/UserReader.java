@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -67,7 +68,7 @@ public class UserReader {
             chooseDirection = Sort.Direction.DESC;
         }
 
-        Page<User> query = userRepository.findAllByCourseId(
+        Page<User> query = userRepository.findAllByCourseIdCustomQuery(
                 courseId,
                 search,
                 PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
@@ -95,5 +96,9 @@ public class UserReader {
         return usersOut;
     }
 
+    public Collection<User> getAllUsersByCourseId(Long courseId) {
 
+        Collection<Course> courses = courseRepository.findAllByIdIn(Arrays.asList(courseId));
+        return userRepository.findAllByCoursesIn(courses);
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,4 +38,6 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
     @Query("DELETE FROM Course o WHERE o.id = :id AND o.users IN :students")
     void deleteStudentsFromCourse(@Param("id") Long id, @Param("students") List<User> students);
+
+    Collection<Course> findAllByIdIn(Collection<Long> ids);
 }

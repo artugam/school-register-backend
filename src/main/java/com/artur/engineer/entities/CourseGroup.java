@@ -1,5 +1,6 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.CourseGroupUsersView;
 import com.artur.engineer.engine.views.CourseGroupView;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -27,7 +28,7 @@ public class CourseGroup extends BaseEntity {
     @JsonView({CourseGroupView.class})
     private Course course;
 
-    @JsonView({CourseGroupView.class})
+    @JsonView({CourseGroupUsersView.class})
     @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
     private Collection<User> users = new HashSet<>();
 

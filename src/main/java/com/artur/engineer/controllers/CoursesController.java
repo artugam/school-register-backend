@@ -21,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -112,6 +113,16 @@ public class CoursesController {
         return userReader.getAllUsersByCourseId(id, page, records, sortField, sortDirection, search);
     }
 
+    @GetMapping(path = "/{courseId}/allStudents")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    public Collection<User> getCourseUsers(
+            @PathVariable(value = "courseId") Long id
+    ) {
+        return userReader.getAllUsersByCourseId(id);
+    }
+
     @DeleteMapping(path = "/{courseId}/students")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({PagedView.class})
@@ -136,6 +147,8 @@ public class CoursesController {
          return new ApiResponse(true, "Users Added");
     }
 
+
+
     @GetMapping(path = "/{courseId}/notStudents")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -143,14 +156,13 @@ public class CoursesController {
     public List<User> getUsersNotInCourse(
             @PathVariable(value = "courseId") Long id
     ) {
-        List<User> users = userReader.getUserNotInCourse(id);
-        return users;
+        return userReader.getUserNotInCourse(id);
     }
 
     @PostMapping(path = "/{courseId}/foreman")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @JsonView({CourseView.class})
+    @JsonView({CourseWithUserView.class})
     public Course addCourseForeman(
             @PathVariable(value = "courseId") Long id,
             @Valid @RequestBody UserIdPayload userIdPayload

@@ -1,5 +1,6 @@
 package com.artur.engineer.repositories;
 
+import com.artur.engineer.entities.Course;
 import com.artur.engineer.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +28,14 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     );
 
     @Query("select u from User u join u.courses c where c.id = :courseId AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
-    Page<User> findAllByCourseId(
+    Page<User> findAllByCourseIdCustomQuery(
             @Param("courseId") Long courseId,
             @Param("search") String search,
             Pageable pageable
+    );
+
+    Collection<User> findAllByCoursesIn(
+            Collection<Course> courses
     );
 
     @Query("select u from User u join u.groups c where c.id = :courseGroupId AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
