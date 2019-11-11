@@ -18,24 +18,6 @@ public class SubjectSchedule extends BaseEntity {
     @JoinColumn
     private Subject subject;
 
-    @ManyToMany
-    @JoinTable(
-            name = "subject_teachers",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "subject_schedule_id", referencedColumnName = "id"))
-    private Collection<User> teachers;
-
-    @ManyToMany
-    @JoinTable(
-            name = "subject_students",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "subject_schedule_id", referencedColumnName = "id"))
-    private Collection<User> students;
-
     @OneToMany(mappedBy = "subjectSchedule", cascade = CascadeType.ALL)
     private Collection<Grade> grades;
 
@@ -56,22 +38,6 @@ public class SubjectSchedule extends BaseEntity {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
-    }
-
-    public Collection<User> getTeachers() {
-        return teachers;
-    }
-
-    public void setTeachers(Collection<User> teachers) {
-        this.teachers = teachers;
-    }
-
-    public Collection<User> getStudents() {
-        return students;
-    }
-
-    public void setStudents(Collection<User> students) {
-        this.students = students;
     }
 
     public Collection<Grade> getGrades() {

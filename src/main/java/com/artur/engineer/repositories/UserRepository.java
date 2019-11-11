@@ -1,6 +1,7 @@
 package com.artur.engineer.repositories;
 
 import com.artur.engineer.entities.Course;
+import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,14 +21,16 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     Optional<User> findById(Long id);
 
-    Page<User> findByFirstNameContainingOrLastNameContainingOrEmailContaining(
-            Pageable pageable,
-            String firstNameSearch,
-            String lastNameSearch,
-            String emailSearch
+    @Query("select u from User u join u.roles r where r.name IN (:role) AND r.name NOT IN :notRoles AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
+    Page<User> findByFirstNameContainingOrLastNameContainingOrEmailContainingAndRolesIn(
+            @Param("search") String search,
+//            List<String> role,
+            @Param("role") List<String> role,
+            @Param("notRoles") List<String> notRoles,
+            Pageable pageable
     );
 
-    @Query("select u from User u join u.courses c where c.id = :courseId AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
+    @Query("select u from User u join u.courses c join u.roles r where c.id = :courseId AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
     Page<User> findAllByCourseIdCustomQuery(
             @Param("courseId") Long courseId,
             @Param("search") String search,
@@ -52,5 +55,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     List<User> findAll();
 
     List<User> findAllByOrderByLastNameAsc();
+
+    @Query("select u from User u join u.roles r where r.name = :roleName")
+    Collection<User> findAllByRoleName(@Param("roleName") String roleName);
 
 }

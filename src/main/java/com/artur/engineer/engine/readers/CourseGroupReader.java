@@ -1,14 +1,8 @@
 package com.artur.engineer.engine.readers;
 
-import com.artur.engineer.entities.Course;
-import com.artur.engineer.entities.CourseGroup;
-import com.artur.engineer.entities.Role;
-import com.artur.engineer.entities.User;
+import com.artur.engineer.entities.*;
 import com.artur.engineer.payload.PagedResponse;
-import com.artur.engineer.repositories.CourseGroupRepository;
-import com.artur.engineer.repositories.CourseRepository;
-import com.artur.engineer.repositories.RoleRepository;
-import com.artur.engineer.repositories.UserRepository;
+import com.artur.engineer.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,13 +24,13 @@ import java.util.List;
 public class CourseGroupReader {
 
     @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
     private CourseGroupRepository repository;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SubjectRepository subjectRepository;
 
     public CourseGroup get(Long id) {
         return repository.findById(id).orElseThrow(

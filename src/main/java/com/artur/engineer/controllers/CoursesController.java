@@ -6,7 +6,6 @@ import com.artur.engineer.engine.readers.CoursesReader;
 import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.engine.views.*;
 import com.artur.engineer.entities.Course;
-import com.artur.engineer.entities.CourseGroup;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;

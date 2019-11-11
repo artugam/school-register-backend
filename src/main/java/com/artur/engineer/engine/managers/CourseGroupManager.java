@@ -71,7 +71,8 @@ public class CourseGroupManager {
     public CourseGroup deleteStudents(Long id, StudentsIds payload) {
 
         CourseGroup courseGroup = reader.get(id);
-        for (User user : userRepository.findAllByIdIn(payload.getStudentsIds())) {
+        Collection<User> users = userRepository.findAllByIdIn(payload.getStudentsIds());
+        for (User user : users) {
             courseGroup.removeUser(user);
         }
 

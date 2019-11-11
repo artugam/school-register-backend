@@ -19,9 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
  */
@@ -45,9 +42,10 @@ public class UserController {
             @RequestParam(required = false, defaultValue = "10") Integer records,
             @RequestParam(required = false, defaultValue = "id") String sortField,
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
-            @RequestParam(required = false, defaultValue = "") String search
+            @RequestParam(required = false, defaultValue = "") String search,
+            @RequestParam(required = false, defaultValue = "ROLE_USER") String role
     ) {
-        return userReader.getAllUsers(page, records, sortField, sortDirection, search);
+        return userReader.getAllUsers(page, records, sortField, sortDirection, search, role);
     }
 
     @PostMapping(path = "")

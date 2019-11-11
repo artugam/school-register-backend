@@ -65,10 +65,7 @@ public class User extends BaseEntity {
     private Collection<Course> foremanCourses;
 
     @ManyToMany(mappedBy = "teachers")
-    private Collection<SubjectSchedule> teachSubjects;
-
-    @ManyToMany(mappedBy = "students")
-    private Collection<SubjectSchedule> learnSubjects;
+    private Collection<Subject> teachSubjects;
 
     public Long getId() {
         return id;
@@ -156,20 +153,12 @@ public class User extends BaseEntity {
         this.grades = grades;
     }
 
-    public Collection<SubjectSchedule> getTeachSubjects() {
+    public Collection<Subject> getTeachSubjects() {
         return teachSubjects;
     }
 
-    public void setTeachSubjects(Collection<SubjectSchedule> teachSubjects) {
+    public void setTeachSubjects(Collection<Subject> teachSubjects) {
         this.teachSubjects = teachSubjects;
-    }
-
-    public Collection<SubjectSchedule> getLearnSubjects() {
-        return learnSubjects;
-    }
-
-    public void setLearnSubjects(Collection<SubjectSchedule> learnSubjects) {
-        this.learnSubjects = learnSubjects;
     }
 
     public Collection<Course> getForemanCourses() {
@@ -213,6 +202,20 @@ public class User extends BaseEntity {
         if(this.groups.contains(group)) {
             this.groups.remove(group);
             group.removeUser(this);
+        }
+    }
+
+    public void addTeachSubject(Subject subject) {
+        if(!this.teachSubjects.contains(subject)) {
+            this.teachSubjects.add(subject);
+            subject.addTeacher(this);
+        }
+    }
+    public void removeTeachSubject(Subject subject)
+    {
+        if(this.teachSubjects.contains(subject)) {
+            this.teachSubjects.remove(subject);
+            subject.removeTeacher(this);
         }
     }
 }

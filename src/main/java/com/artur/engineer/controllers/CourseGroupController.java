@@ -4,6 +4,7 @@ import com.artur.engineer.engine.managers.CourseGroupManager;
 import com.artur.engineer.engine.managers.CourseManager;
 import com.artur.engineer.engine.readers.CourseGroupReader;
 import com.artur.engineer.engine.readers.CoursesReader;
+import com.artur.engineer.engine.readers.SubjectReader;
 import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.engine.views.*;
 import com.artur.engineer.entities.Course;
@@ -36,6 +37,9 @@ public class CourseGroupController {
 
     @Autowired
     private CourseGroupReader reader;
+
+    @Autowired
+    private SubjectReader subjectReader;
 
     @Autowired
     private CourseGroupManager manager;
@@ -112,11 +116,28 @@ public class CourseGroupController {
     @DeleteMapping(path = "/{groupId}/students")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_SUPER_USER')")
-    @JsonView({CourseView.class})
+    @JsonView({CourseGroupView.class})
     public CourseGroup delete(
             @PathVariable(value = "groupId") Long id,
             @Valid @RequestBody StudentsIds payload
     ) {
         return manager.deleteStudents(id, payload);
     }
+
+
+    @GetMapping(path = "/{groupId}/subjects")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @JsonView({PagedView.class})
+    public PagedResponse getGroupSubjects(
+            @PathVariable(value = "groupId") Long id,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer records,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @RequestParam(required = false, defaultValue = "") String search
+    ) {
+        return subjectReader.getSubjects(id, page, records, sortField, sortDirection, search);
+    }
+
 }

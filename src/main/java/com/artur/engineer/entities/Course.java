@@ -68,9 +68,6 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Collection<CourseGroup> groups;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Collection<Subject> subjects;
-
     public Long getId() {
         return id;
     }
@@ -157,13 +154,7 @@ public class Course extends BaseEntity {
         }
     }
 
-    public Collection<Subject> getSubjects() {
-        return subjects;
-    }
 
-    public void setSubjects(Collection<Subject> subjects) {
-        this.subjects = subjects;
-    }
 
     public User getForeman() {
         return foreman;
