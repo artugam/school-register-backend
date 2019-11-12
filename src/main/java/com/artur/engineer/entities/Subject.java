@@ -4,10 +4,8 @@ import com.artur.engineer.engine.views.SubjectView;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+
 
 @Entity
 public class Subject extends BaseEntity {
@@ -39,12 +37,13 @@ public class Subject extends BaseEntity {
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private Collection<SubjectSchedule> subjectSchedule;
 
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    private Collection<Grade> grades;
+
     @ManyToOne
     @JoinColumn
     @JsonView({SubjectView.class})
     private CourseGroup group;
-
-
 
     @JsonView({SubjectView.class})
     @ManyToMany
@@ -126,5 +125,13 @@ public class Subject extends BaseEntity {
             this.teachers.remove(u);
             u.removeTeachSubject(this);
         }
+    }
+
+    public Collection<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Collection<Grade> grades) {
+        this.grades = grades;
     }
 }

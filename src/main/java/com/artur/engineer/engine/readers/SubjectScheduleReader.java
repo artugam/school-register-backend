@@ -1,6 +1,9 @@
 package com.artur.engineer.engine.readers;
 
-import com.artur.engineer.entities.*;
+import com.artur.engineer.entities.Role;
+import com.artur.engineer.entities.Subject;
+import com.artur.engineer.entities.SubjectSchedule;
+import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
 import com.artur.engineer.repositories.SubjectRepository;
@@ -19,8 +22,8 @@ import java.util.Collection;
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
  */
-@Component("SubjectReader")
-public class SubjectReader {
+@Component("SubjectScheduleReader")
+public class SubjectScheduleReader {
 
     @Autowired
     private SubjectRepository subjectRepository;
@@ -34,8 +37,8 @@ public class SubjectReader {
     @Autowired
     private SubjectScheduleRepository subjectScheduleRepository;
 
-    public Subject get(Long id) {
-        return repository.findById(id).orElseThrow(
+    public SubjectSchedule get(Long id) {
+        return subjectScheduleRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Subject not found with id : " + id)
         );
     }

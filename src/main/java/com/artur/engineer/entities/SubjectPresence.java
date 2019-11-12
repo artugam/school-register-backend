@@ -23,7 +23,7 @@ public class SubjectPresence extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn
@@ -35,7 +35,7 @@ public class SubjectPresence extends BaseEntity{
 
     private String presenceStatus;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -65,4 +65,6 @@ public class SubjectPresence extends BaseEntity{
         }
         this.presenceStatus = presenceStatus;
     }
+
+
 }

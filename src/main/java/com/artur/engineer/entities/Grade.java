@@ -43,7 +43,7 @@ public class Grade extends BaseEntity {
 
     @ManyToOne
     @JoinColumn
-    private SubjectSchedule subjectSchedule;
+    private Subject subject;
 
     private double grade;
 
@@ -61,12 +61,12 @@ public class Grade extends BaseEntity {
         this.user = user;
     }
 
-    public SubjectSchedule getSubjectSchedule() {
-        return subjectSchedule;
+    public Subject getSubject() {
+        return subject;
     }
 
-    public void setSubjectSchedule(SubjectSchedule subjectSchedule) {
-        this.subjectSchedule = subjectSchedule;
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
     public double getGrade() {

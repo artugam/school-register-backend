@@ -1,5 +1,9 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.SubjectScheduleView;
+import com.artur.engineer.engine.views.UserView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
@@ -12,23 +16,27 @@ public class SubjectSchedule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @JsonView(SubjectScheduleView.class)
+    private Long id;
 
     @ManyToOne
     @JoinColumn
     private Subject subject;
 
     @OneToMany(mappedBy = "subjectSchedule", cascade = CascadeType.ALL)
-    private Collection<Grade> grades;
+    private Collection<SubjectPresence> presences;
 
+    @JsonView(SubjectScheduleView.class)
     private Date start;
+
+    @JsonView(SubjectScheduleView.class)
     private Date end;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -40,12 +48,12 @@ public class SubjectSchedule extends BaseEntity {
         this.subject = subject;
     }
 
-    public Collection<Grade> getGrades() {
-        return grades;
+    public Collection<SubjectPresence> getPresences() {
+        return presences;
     }
 
-    public void setGrades(Collection<Grade> grades) {
-        this.grades = grades;
+    public void setPresences(Collection<SubjectPresence> presences) {
+        this.presences = presences;
     }
 
     public Date getStart() {

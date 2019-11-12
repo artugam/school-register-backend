@@ -42,7 +42,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Grade> grades;
 
-
     @ManyToMany
     @JoinTable(
             name = "user_course",
