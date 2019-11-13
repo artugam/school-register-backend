@@ -62,28 +62,4 @@ public class SubjectManager {
         repository.deleteById(id);
     }
 
-//    public CourseGroup setStudents(Long id, StudentsIds payload) {
-//
-//        CourseGroup courseGroup = reader.get(id);
-//        for (User u : userRepository.findAllByIdIn(payload.getStudentsIds())) {
-//            courseGroup.addUser(u);
-//        }
-//
-//        repository.save(courseGroup);
-//
-//        return courseGroup;
-//    }
-//
-//    public CourseGroup deleteStudents(Long id, StudentsIds payload) {
-//
-//        CourseGroup courseGroup = reader.get(id);
-//        Collection<User> users = userRepository.findAllByIdIn(payload.getStudentsIds());
-//        for (User user : users) {
-//            courseGroup.removeUser(user);
-//        }
-//
-//        repository.save(courseGroup);
-//
-//        return courseGroup;
-//    }
 }

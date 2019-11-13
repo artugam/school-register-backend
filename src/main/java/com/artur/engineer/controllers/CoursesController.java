@@ -13,6 +13,7 @@ import com.artur.engineer.payload.course.CourseConfigurationResponse;
 import com.artur.engineer.payload.course.CourseCreate;
 import com.artur.engineer.payload.course.StudentsIds;
 import com.artur.engineer.payload.user.UserIdPayload;
+import com.artur.engineer.repositories.CourseRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,9 @@ public class CoursesController {
     @Autowired
     private CourseManager manager;
 
+    @Autowired
+    private CourseRepository repository;
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
@@ -55,6 +59,14 @@ public class CoursesController {
             @RequestParam(required = false, defaultValue = "") String search
     ) {
         return reader.getAll(page, records, sortField, sortDirection, search);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @GetMapping(path = "/all/records")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    public Iterable<Course> findAll() {
+        return repository.findAll();
     }
 
     @PostMapping(path = "")

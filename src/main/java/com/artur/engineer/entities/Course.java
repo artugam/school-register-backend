@@ -68,6 +68,9 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Collection<CourseGroup> groups;
 
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private Collection<Notification> notifications;
+
     public Long getId() {
         return id;
     }
@@ -186,5 +189,28 @@ public class Course extends BaseEntity {
             this.groups.remove(group);
             group.setCourse(null);
         }
+    }
+
+    public void addNotification(Notification notification) {
+        if(!this.notifications.contains(notification)) {
+            this.notifications.add(notification);
+            notification.setCourse(this);
+        }
+    }
+
+    public void removeNotification(Notification notification) {
+        if(this.notifications.contains(notification)) {
+            this.notifications.remove(notification);
+            notification.setCourse(null);
+        }
+    }
+
+    public Collection<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Collection<Notification> notifications) {
+        this.notifications = notifications;
+
     }
 }

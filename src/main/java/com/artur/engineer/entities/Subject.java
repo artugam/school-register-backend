@@ -55,6 +55,9 @@ public class Subject extends BaseEntity {
                     name = "subject_id", referencedColumnName = "id"))
     private Collection<User> teachers;
 
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    private Collection<Notification> notifications;
+
     public Long getId() {
         return id;
     }
@@ -133,5 +136,28 @@ public class Subject extends BaseEntity {
 
     public void setGrades(Collection<Grade> grades) {
         this.grades = grades;
+    }
+
+    public void addNotification(Notification notification) {
+        if(!this.notifications.contains(notification)) {
+            this.notifications.add(notification);
+            notification.setSubject(this);
+        }
+    }
+
+    public void removeNotification(Notification notification) {
+        if(this.notifications.contains(notification)) {
+            this.notifications.remove(notification);
+            notification.setSubject(null);
+        }
+    }
+
+    public Collection<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Collection<Notification> notifications) {
+        this.notifications = notifications;
+
     }
 }

@@ -2,10 +2,15 @@ package com.artur.engineer.controllers;
 
 import com.artur.engineer.engine.exceptions.ApiException;
 import com.artur.engineer.engine.managers.UserManager;
+import com.artur.engineer.engine.readers.NotificationReader;
+import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.UserView;
+import com.artur.engineer.entities.Notification;
+import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.JwtAuthenticationResponse;
 import com.artur.engineer.payload.LoginRequest;
+import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.repositories.RoleRepository;
 import com.artur.engineer.repositories.UserRepository;
@@ -53,6 +58,9 @@ public class AuthenticationController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @Autowired
+    NotificationReader notificationReader;
+
     @PostMapping(path = "/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -82,5 +90,23 @@ public class AuthenticationController {
     @JsonView({UserView.class})
     public Optional<User> me(@CurrentUser UserPrincipal currentUser) {
         return userRepository.findById(currentUser.getId());
+    }
+
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @GetMapping(path = "/notifications")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    public PagedResponse<Notification> me(
+            @CurrentUser UserPrincipal currentUser,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer records,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @RequestParam(required = false, defaultValue = "") String search
+    ) {
+        if(currentUser.getAuthorities().contains(Role.ROLE_ADMIN)) {
+            return notificationReader.getNotifications(page, records, sortField, sortDirection, search);
+        }
+        return notificationReader.getNotifications(currentUser.getId(), page, records, sortField, sortDirection, search);
     }
 }
