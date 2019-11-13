@@ -1,5 +1,8 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.SubjectPresenceView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Arrays;
 
@@ -22,6 +25,7 @@ public class SubjectPresence extends BaseEntity{
     };
 
     @Id
+    @JsonView(SubjectPresenceView.class)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -31,8 +35,10 @@ public class SubjectPresence extends BaseEntity{
 
     @ManyToOne
     @JoinColumn
+    @JsonView(SubjectPresenceView.class)
     private User user;
 
+    @JsonView(SubjectPresenceView.class)
     private String presenceStatus;
 
     public Long getId() {

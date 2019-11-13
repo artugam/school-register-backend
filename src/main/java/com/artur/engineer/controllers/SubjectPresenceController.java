@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.ws.rs.POST;
 
 @Controller
 @CrossOrigin
@@ -36,6 +37,7 @@ public class SubjectPresenceController {
     SubjectPresenceConfigurationOptions getConfiguration() {
         return reader.getConfiguration();
     }
+
 
 //    @PostMapping(path = "")
 //    @JsonView({SubjectScheduleView.class})

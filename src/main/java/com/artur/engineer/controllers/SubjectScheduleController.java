@@ -1,21 +1,12 @@
 package com.artur.engineer.controllers;
 
-import com.artur.engineer.engine.managers.SubjectManager;
 import com.artur.engineer.engine.managers.SubjectScheduleManager;
-import com.artur.engineer.engine.readers.SubjectReader;
 import com.artur.engineer.engine.readers.SubjectScheduleReader;
-import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.SubjectScheduleView;
-import com.artur.engineer.engine.views.SubjectView;
-import com.artur.engineer.engine.views.UserView;
-import com.artur.engineer.entities.Subject;
 import com.artur.engineer.entities.SubjectSchedule;
 import com.artur.engineer.payload.ApiResponse;
-import com.artur.engineer.payload.PagedResponse;
-import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
-import com.artur.engineer.payload.subject.SubjectCreate;
 import com.artur.engineer.payload.subjectSchedule.SubjectScheduleCreate;
-import com.artur.engineer.repositories.SubjectRepository;
+import com.artur.engineer.payload.subjectSchedule.SubjectSchedulePresencePayload;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @CrossOrigin
@@ -73,5 +65,16 @@ public class SubjectScheduleController {
     ) {
         manager.remove(id);
         return new ApiResponse(true, "Subject has been deleted");
+    }
+
+    @PostMapping(path = "/{scheduleId}/presence")
+    @JsonView({SubjectScheduleView.class})
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    public @ResponseBody
+    SubjectSchedule addPresence(
+            @PathVariable(value = "scheduleId") Long id,
+            @Valid @RequestBody List<SubjectSchedulePresencePayload> payload
+    ) {
+        return manager.addPresence(id, payload);
     }
 }

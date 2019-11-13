@@ -23,6 +23,7 @@ public class SubjectSchedule extends BaseEntity {
     @JoinColumn
     private Subject subject;
 
+    @JsonView(SubjectScheduleView.class)
     @OneToMany(mappedBy = "subjectSchedule", cascade = CascadeType.ALL)
     private Collection<SubjectPresence> presences;
 
@@ -31,6 +32,10 @@ public class SubjectSchedule extends BaseEntity {
 
     @JsonView(SubjectScheduleView.class)
     private Date end;
+
+    @JsonView(SubjectScheduleView.class)
+    @Column(columnDefinition="TEXT")
+    private String description;
 
     public Long getId() {
         return id;
@@ -56,6 +61,13 @@ public class SubjectSchedule extends BaseEntity {
         this.presences = presences;
     }
 
+    public void addPresence(SubjectPresence presence) {
+        if(!this.presences.contains(presence)) {
+            this.presences.add(presence);
+            presence.setSubjectSchedule(this);
+        }
+    }
+
     public Date getStart() {
         return start;
     }
@@ -72,4 +84,11 @@ public class SubjectSchedule extends BaseEntity {
         this.end = end;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

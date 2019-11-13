@@ -19,6 +19,8 @@ public class SubjectScheduleCreate {
     @NotNull
     private Date end;
 
+    private String description;
+
     public Date getStart() {
         return start;
     }
@@ -29,5 +31,9 @@ public class SubjectScheduleCreate {
 
     public Long getSubjectId() {
         return subjectId;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
