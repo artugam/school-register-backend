@@ -30,6 +30,9 @@ public class CourseGroupReader {
     private UserRepository userRepository;
 
     @Autowired
+    CoursesReader courseReader;
+
+    @Autowired
     private SubjectRepository subjectRepository;
 
     public CourseGroup get(Long id) {
@@ -69,5 +72,9 @@ public class CourseGroupReader {
 
 
         return new PagedResponse<>(query);
+    }
+
+    public Collection<CourseGroup> getGroupsByCourseId(Long courseId) {
+        return repository.findAllByCourse(courseReader.get(courseId));
     }
 }

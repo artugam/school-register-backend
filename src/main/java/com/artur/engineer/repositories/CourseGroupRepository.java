@@ -1,5 +1,6 @@
 package com.artur.engineer.repositories;
 
+import com.artur.engineer.entities.Course;
 import com.artur.engineer.entities.CourseGroup;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.security.acl.Group;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface CourseGroupRepository extends CrudRepository<CourseGroup, Integer> {
@@ -21,4 +24,8 @@ public interface CourseGroupRepository extends CrudRepository<CourseGroup, Integ
     );
 
     void deleteById(Long id);
+
+
+    Collection<CourseGroup> findAllByCourse(Course course);
+
 }

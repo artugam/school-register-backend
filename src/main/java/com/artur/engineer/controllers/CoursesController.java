@@ -6,6 +6,7 @@ import com.artur.engineer.engine.readers.CoursesReader;
 import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.engine.views.*;
 import com.artur.engineer.entities.Course;
+import com.artur.engineer.entities.CourseGroup;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;
@@ -194,5 +195,15 @@ public class CoursesController {
             @RequestParam(required = false, defaultValue = "") String search
     ) {
         return groupReader.getGroupsByCourseId(id, page, records, sortField, sortDirection, search);
+    }
+
+    @GetMapping(path = "/{courseId}/groups/all")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    public Collection<CourseGroup> getCourseGroups(
+            @PathVariable(value = "courseId") Long id
+    ) {
+        return groupReader.getGroupsByCourseId(id);
     }
 }
