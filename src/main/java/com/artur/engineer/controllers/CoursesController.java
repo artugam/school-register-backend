@@ -199,7 +199,7 @@ public class CoursesController {
 
     @GetMapping(path = "/{courseId}/groups/all")
     @ResponseStatus(HttpStatus.OK)
-    @JsonView({PagedView.class})
+    @JsonView({CourseGroupView.class})
     @PreAuthorize("hasRole('ROLE_SUPER_USER')")
     public Collection<CourseGroup> getCourseGroups(
             @PathVariable(value = "courseId") Long id

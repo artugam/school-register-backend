@@ -3,11 +3,11 @@ package com.artur.engineer.controllers;
 import com.artur.engineer.engine.exceptions.ApiException;
 import com.artur.engineer.engine.managers.UserManager;
 import com.artur.engineer.engine.readers.NotificationReader;
+import com.artur.engineer.engine.readers.SubjectScheduleReader;
 import com.artur.engineer.engine.views.PagedView;
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.UserView;
-import com.artur.engineer.entities.Notification;
-import com.artur.engineer.entities.Role;
-import com.artur.engineer.entities.User;
+import com.artur.engineer.entities.*;
 import com.artur.engineer.payload.JwtAuthenticationResponse;
 import com.artur.engineer.payload.LoginRequest;
 import com.artur.engineer.payload.PagedResponse;
@@ -19,6 +19,7 @@ import com.artur.engineer.security.JwtTokenProvider;
 import com.artur.engineer.security.UserPrincipal;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +31,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -60,6 +66,9 @@ public class AuthenticationController {
 
     @Autowired
     NotificationReader notificationReader;
+
+    @Autowired
+    SubjectScheduleReader subjectScheduleReader;
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -109,4 +118,56 @@ public class AuthenticationController {
         }
         return notificationReader.getNotifications(currentUser.getId(), page, records, sortField, sortDirection, search);
     }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping(path = "/me/notifications")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    public PagedResponse<Notification> myNotifications(
+            @CurrentUser UserPrincipal currentUser,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer records
+    ) {
+        return notificationReader.getMyNotifications(currentUser, page, records);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping(path = "/me/subjects/today")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({SubjectScheduleFullView.class})
+    public Collection<SubjectSchedule> todaysSubjects(
+            @CurrentUser UserPrincipal currentUser
+    ) {
+        Date start = new Date();
+        start.setHours(0);
+        start.setMinutes(0);
+        start.setSeconds(0);
+
+        Date end = new Date();
+        end.setHours(23);
+        end.setMinutes(59);
+        end.setSeconds(59);
+
+        return subjectScheduleReader.getScheduleSubjects(currentUser, start, end);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping(path = "/me/subjects")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({SubjectScheduleFullView.class})
+    public Collection<SubjectSchedule> todaysSubjects (
+            @CurrentUser UserPrincipal currentUser,
+            @RequestParam(required = false) Date start,
+            @RequestParam(required = false) Date end
+    ) throws ParseException {
+//        DateFormat formatStart = new SimpleDateFormat("YYYY-MM-DD, HH:mm:ss");
+//        Date startDate = formatStart.parse(start);
+
+//        DateFormat formatEnd = new SimpleDateFormat("YYYY-MM-DD, HH:mm:ss");
+//        Date endDate = formatEnd.parse(end);
+
+        return subjectScheduleReader.getScheduleSubjects(currentUser, start, end);
+    }
+//    @RequestParam(required = false) @DateTimeFormat(pattern = "YYYY-MM-DD HH:mm:ss.sss") Date start,
+//    @RequestParam(required = false) @DateTimeFormat(pattern = "YYYY-MM-DD HH:mm:ss.sss") Date end
 }

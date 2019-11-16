@@ -1,5 +1,6 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.SubjectView;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -22,16 +23,16 @@ public class Subject extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView({SubjectView.class})
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
     private Long id;
 
-    @JsonView({SubjectView.class})
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
     private String name;
 
     @JsonView({SubjectView.class})
     private double hours;
 
-    @JsonView({SubjectView.class})
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
     private String type;
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
@@ -42,10 +43,10 @@ public class Subject extends BaseEntity {
 
     @ManyToOne
     @JoinColumn
-    @JsonView({SubjectView.class})
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
     private CourseGroup group;
 
-    @JsonView({SubjectView.class})
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
     @ManyToMany
     @JoinTable(
             name = "subject_teachers",

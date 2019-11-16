@@ -1,5 +1,6 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -14,13 +15,13 @@ public class User extends BaseEntity {
     @JsonView(UserView.class)
     private Long id;
 
-    @JsonView(UserView.class)
+    @JsonView({UserView.class, SubjectScheduleFullView.class})
     private String firstName;
 
-    @JsonView(UserView.class)
+    @JsonView({UserView.class, SubjectScheduleFullView.class})
     private String lastName;
 
-    @JsonView({UserView.class, UserView.class})
+    @JsonView({UserView.class, UserView.class, SubjectScheduleFullView.class})
     @Column(unique = true)
     private String email;
 

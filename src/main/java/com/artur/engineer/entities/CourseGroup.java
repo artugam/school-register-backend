@@ -2,6 +2,7 @@ package com.artur.engineer.entities;
 
 import com.artur.engineer.engine.views.CourseGroupUsersView;
 import com.artur.engineer.engine.views.CourseGroupView;
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
@@ -16,16 +17,16 @@ public class CourseGroup extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView({CourseGroupView.class})
+    @JsonView({CourseGroupView.class, SubjectScheduleFullView.class})
     private Long id;
 
 
-    @JsonView({CourseGroupView.class})
+    @JsonView({CourseGroupView.class, SubjectScheduleFullView.class})
     private String name;
 
     @ManyToOne
     @JoinColumn
-    @JsonView({CourseGroupView.class})
+    @JsonView({CourseGroupView.class, SubjectScheduleFullView.class})
     private Course course;
 
     @JsonView({CourseGroupUsersView.class})

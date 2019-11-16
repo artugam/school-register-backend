@@ -1,6 +1,8 @@
 package com.artur.engineer.repositories;
 
 
+import com.artur.engineer.entities.Course;
+import com.artur.engineer.entities.CourseGroup;
 import com.artur.engineer.entities.Subject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface SubjectRepository extends CrudRepository<Subject, Integer> {
@@ -22,5 +25,10 @@ public interface SubjectRepository extends CrudRepository<Subject, Integer> {
             @Param("search") String search,
             Pageable pageable
     );
+
+
+    Collection<Subject> findAllByGroup(CourseGroup group);
+
+    Collection<Subject> findAll();
 
 }

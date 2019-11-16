@@ -1,5 +1,6 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.SubjectScheduleView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -21,6 +22,7 @@ public class SubjectSchedule extends BaseEntity {
 
     @ManyToOne
     @JoinColumn
+    @JsonView(SubjectScheduleFullView.class)
     private Subject subject;
 
     @JsonView(SubjectScheduleView.class)

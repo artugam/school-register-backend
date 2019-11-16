@@ -44,6 +44,11 @@ public interface NotificationRepository extends CrudRepository<Notification, Int
             Pageable pageable
     );
 
+    Page<Notification> findAllByCourseIn(
+            Collection<Course> courses,
+            Pageable pageable
+    );
+
 
     Collection<Notification> findAllByIdIn(Collection<Long> ids);
 }

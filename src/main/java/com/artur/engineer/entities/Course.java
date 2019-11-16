@@ -2,6 +2,7 @@ package com.artur.engineer.entities;
 
 import com.artur.engineer.engine.views.CourseView;
 import com.artur.engineer.engine.views.CourseWithUserView;
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -40,19 +41,19 @@ public class Course extends BaseEntity {
     @JsonView({CourseView.class, CourseWithUserView.class})
     private Long id;
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private String name;
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private String form;
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private String degree;
 
     @JsonView({CourseView.class, CourseWithUserView.class})
     private int semesters;
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private Date startDate = new Date();
 
     @JsonView({CourseView.class, CourseWithUserView.class})

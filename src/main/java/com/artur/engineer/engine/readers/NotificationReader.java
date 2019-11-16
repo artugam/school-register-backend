@@ -28,6 +28,9 @@ public class NotificationReader {
     @Autowired
     private NotificationRepository repository;
 
+    @Autowired
+    private UserReader userReader;
+
     public Notification get(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new NotFoundException("Notification not found with id : " + id)
@@ -60,6 +63,18 @@ public class NotificationReader {
         Page<Notification> query = repository.findAllNotifications(
                 search,
                 PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
+        );
+
+        return new PagedResponse<>(query);
+    }
+
+    public PagedResponse<Notification> getMyNotifications(UserPrincipal currentUser, int page, int size) {
+
+        User user = userReader.get(currentUser.getId());
+
+        Page<Notification> query = repository.findAllByCourseIn(
+                user.getCourses(),
+                PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"))
         );
 
         return new PagedResponse<>(query);

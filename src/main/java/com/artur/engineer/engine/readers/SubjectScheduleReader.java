@@ -1,14 +1,12 @@
 package com.artur.engineer.engine.readers;
 
-import com.artur.engineer.entities.Role;
-import com.artur.engineer.entities.Subject;
-import com.artur.engineer.entities.SubjectSchedule;
-import com.artur.engineer.entities.User;
+import com.artur.engineer.entities.*;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
 import com.artur.engineer.repositories.SubjectRepository;
 import com.artur.engineer.repositories.SubjectScheduleRepository;
 import com.artur.engineer.repositories.UserRepository;
+import com.artur.engineer.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
 import java.util.Collection;
+import java.util.Date;
 
 
 /**
@@ -36,6 +35,9 @@ public class SubjectScheduleReader {
 
     @Autowired
     private SubjectScheduleRepository subjectScheduleRepository;
+
+    @Autowired
+    private UserReader userReader;
 
     public SubjectSchedule get(Long id) {
         return subjectScheduleRepository.findById(id).orElseThrow(
@@ -83,5 +85,17 @@ public class SubjectScheduleReader {
 
 
         return new PagedResponse<>(query);
+    }
+
+    public Collection<SubjectSchedule> getScheduleSubjects(UserPrincipal currentUser, Date start, Date end) {
+
+        User user = userReader.get(currentUser.getId());
+
+        return subjectScheduleRepository.getScheduleForGroups(
+                user.getGroups(),
+                start,
+                end,
+                Sort.by(Sort.Direction.ASC, "start"
+                ));
     }
 }

@@ -6,6 +6,7 @@ import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
 import com.artur.engineer.repositories.SubjectRepository;
 import com.artur.engineer.repositories.SubjectScheduleRepository;
 import com.artur.engineer.repositories.UserRepository;
+import com.artur.engineer.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
 import java.util.Collection;
+import java.util.Date;
 
 
 /**
@@ -30,6 +32,12 @@ public class SubjectReader {
 
     @Autowired
     private SubjectRepository repository;
+
+    @Autowired
+    private CourseGroupReader groupReader;
+
+    @Autowired
+    private UserReader userReader;
 
     @Autowired
     private SubjectScheduleRepository subjectScheduleRepository;
@@ -54,6 +62,10 @@ public class SubjectReader {
         );
 
         return new PagedResponse<>(query);
+    }
+
+    public Collection<Subject> getSubjects(Long courseGroupId) {
+        return subjectRepository.findAllByGroup(groupReader.get(courseGroupId));
     }
 
     public SubjectConfigurationOptions getConfiguration() {
