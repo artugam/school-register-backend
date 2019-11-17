@@ -69,7 +69,7 @@ public class SubjectScheduleController {
 
     @PostMapping(path = "/{scheduleId}/presence")
     @JsonView({SubjectScheduleView.class})
-    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     public @ResponseBody
     SubjectSchedule addPresence(
             @PathVariable(value = "scheduleId") Long id,

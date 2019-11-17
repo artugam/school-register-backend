@@ -36,7 +36,7 @@ public class SubjectSchedule extends BaseEntity {
     private Date end;
 
     @JsonView(SubjectScheduleView.class)
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     public Long getId() {
@@ -64,10 +64,19 @@ public class SubjectSchedule extends BaseEntity {
     }
 
     public void addPresence(SubjectPresence presence) {
-        if(!this.presences.contains(presence)) {
+        if (!this.presences.contains(presence)) {
             this.presences.add(presence);
             presence.setSubjectSchedule(this);
         }
+    }
+
+    public SubjectPresence getUserPresence(User user) {
+        for (SubjectPresence presence : this.presences) {
+            if (presence.getUser().equals(user)) {
+                return presence;
+            }
+        }
+        return null;
     }
 
     public Date getStart() {

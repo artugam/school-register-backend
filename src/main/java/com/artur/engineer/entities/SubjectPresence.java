@@ -12,12 +12,15 @@ import java.util.Arrays;
 @Entity
 public class SubjectPresence extends BaseEntity{
 
+    public final static String STATUS_PRESENCE_NONE = "";
     public final static String STATUS_PRESENCE_TRUE = "Obecny";
     public final static String STATUS_PRESENCE_LATE = "Spóźniony";
     public final static String STATUS_PRESENCE_JUSTIFIED = "Usprawiedliwiony";
     public final static String STATUS_PRESENCE_FALSE = "Nieobecny";
 
+
     public final static String ALLOWED_STATUS_PRESENCE[] = {
+            STATUS_PRESENCE_NONE,
             STATUS_PRESENCE_TRUE,
             STATUS_PRESENCE_LATE,
             STATUS_PRESENCE_JUSTIFIED,

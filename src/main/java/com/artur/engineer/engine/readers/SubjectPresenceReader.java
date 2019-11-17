@@ -4,6 +4,7 @@ import com.artur.engineer.entities.*;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.presence.SubjectPresenceConfigurationOptions;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
+import com.artur.engineer.repositories.SubjectPresenceRepository;
 import com.artur.engineer.repositories.SubjectRepository;
 import com.artur.engineer.repositories.SubjectScheduleRepository;
 import com.artur.engineer.repositories.UserRepository;
@@ -25,11 +26,11 @@ public class SubjectPresenceReader {
 
 
     @Autowired
-    private SubjectScheduleRepository subjectScheduleRepository;
+    private SubjectPresenceRepository repository;
 
-    public SubjectSchedule get(Long id) {
-        return subjectScheduleRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Subject not found with id : " + id)
+    public SubjectPresence get(Long id) {
+        return repository.findById(id).orElseThrow(
+                () -> new NotFoundException("Subject presence not found with id : " + id)
         );
     }
 

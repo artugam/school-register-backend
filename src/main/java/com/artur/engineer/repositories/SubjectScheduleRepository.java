@@ -2,6 +2,7 @@ package com.artur.engineer.repositories;
 
 
 import com.artur.engineer.entities.CourseGroup;
+import com.artur.engineer.entities.Subject;
 import com.artur.engineer.entities.SubjectSchedule;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +27,14 @@ public interface SubjectScheduleRepository extends CrudRepository<SubjectSchedul
             Pageable pageable
     );
 
+    Collection<SubjectSchedule> findAllBySubject(
+            Subject subject,
+            Sort sort
+    );
+
     @Query("select u from SubjectSchedule u " +
             "join u.subject s " +
-            "where s.group IN :groups " +
+            "WHERE s.group IN (:groups) " +
             "AND u.start > :dateStart " +
             "AND u.end < :dateEnd ")
     Collection<SubjectSchedule> getScheduleForGroups(

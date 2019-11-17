@@ -3,6 +3,8 @@ package com.artur.engineer.engine.readers;
 import com.artur.engineer.entities.*;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
+import com.artur.engineer.payload.subjectSchedule.FullScheduleResponse;
+import com.artur.engineer.payload.subjectSchedule.FullScheduleResponseRow;
 import com.artur.engineer.repositories.SubjectRepository;
 import com.artur.engineer.repositories.SubjectScheduleRepository;
 import com.artur.engineer.repositories.UserRepository;
@@ -14,8 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -37,7 +41,7 @@ public class SubjectReader {
     private CourseGroupReader groupReader;
 
     @Autowired
-    private UserReader userReader;
+    private SubjectReader subjectReader;
 
     @Autowired
     private SubjectScheduleRepository subjectScheduleRepository;
@@ -92,5 +96,41 @@ public class SubjectReader {
 
 
         return new PagedResponse<>(query);
+    }
+
+    public FullScheduleResponse getSubjectFullSchedule(Long subjectId) {
+
+        Subject subject = subjectReader.get(subjectId);
+
+        Collection<SubjectSchedule> schedules = subjectScheduleRepository.findAllBySubject(subject, Sort.by(Sort.Direction.ASC, "start"));
+
+        FullScheduleResponse response = new FullScheduleResponse();
+        response.schedules = schedules;
+
+        Collection<SubjectSchedule> schedulesToSave = new ArrayList<>();
+
+
+        for (User user : subject.getGroup().getUsers()) {
+            FullScheduleResponseRow row = new FullScheduleResponseRow();
+            row.user = user;
+
+            for (SubjectSchedule schedule : schedules) {
+
+                SubjectPresence userPresence = schedule.getUserPresence(user);
+                if (userPresence == null) {
+                    userPresence = new SubjectPresence();
+                    userPresence.setUser(user);
+                    schedule.addPresence(userPresence);
+                    schedulesToSave.add(schedule);
+                }
+                row.presences.add(userPresence);
+            }
+            response.rows.add(row);
+        }
+
+        subjectScheduleRepository.saveAll(schedulesToSave);
+
+
+        return response;
     }
 }

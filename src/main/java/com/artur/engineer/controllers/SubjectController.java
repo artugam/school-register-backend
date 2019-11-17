@@ -12,6 +12,7 @@ import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.course.CourseCreate;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
 import com.artur.engineer.payload.subject.SubjectCreate;
+import com.artur.engineer.payload.subjectSchedule.FullScheduleResponse;
 import com.artur.engineer.repositories.SubjectRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,16 @@ public class SubjectController {
             @RequestParam(required = false, defaultValue = "") String search
     ) {
         return subjectReader.getSubjectSchedule(id, page, records, sortField, sortDirection, search);
+    }
+
+    @GetMapping(path = "/{subjectId}/schedule/full")
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public @ResponseBody
+    FullScheduleResponse fullSchedule(
+            @PathVariable(value = "subjectId") Long id
+    ) {
+        return subjectReader.getSubjectFullSchedule(id);
     }
 
 
