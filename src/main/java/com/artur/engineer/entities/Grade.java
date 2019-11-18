@@ -25,14 +25,6 @@ public class Grade extends BaseEntity {
             GRADE_FIVE,
     };
 
-    public final static String TYPE_GRADE_END = "Końcowa";
-    public final static String TYPE_GRADE_PARTIAL = "Cząstkowa";
-
-    public final static String ALLOWED_GRADES_TYPES[] = {
-            TYPE_GRADE_END,
-            TYPE_GRADE_PARTIAL
-    };
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -47,7 +39,7 @@ public class Grade extends BaseEntity {
 
     private double grade;
 
-    private String type;
+    private String description;
 
     public Long getId() {
         return id;
@@ -80,14 +72,11 @@ public class Grade extends BaseEntity {
         this.grade = grade;
     }
 
-    public String getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
 
-    public void setType(String type) {
-        if (!Arrays.asList(ALLOWED_GRADES_TYPES).contains(type)) {
-            return;
-        }
-        this.type = type;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

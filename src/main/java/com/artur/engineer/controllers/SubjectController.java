@@ -12,7 +12,9 @@ import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.course.CourseCreate;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
 import com.artur.engineer.payload.subject.SubjectCreate;
+import com.artur.engineer.payload.subject.SubjectGradeSection;
 import com.artur.engineer.payload.subjectSchedule.FullScheduleResponse;
+import com.artur.engineer.payload.subjectSchedule.grades.FullGradesResponse;
 import com.artur.engineer.repositories.SubjectRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,5 +113,26 @@ public class SubjectController {
         return subjectReader.getSubjectFullSchedule(id);
     }
 
+    @GetMapping(path = "/{subjectId}/grades/full")
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public @ResponseBody
+    FullGradesResponse fullGradesSchedule(
+            @PathVariable(value = "subjectId") Long id
+    ) {
+        return subjectReader.getSubjectFullGrades(id);
+    }
+
+    @PostMapping(path = "/{subjectId}/grades/section")
+    @JsonView({PagedView.class})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public @ResponseBody
+    ApiResponse addGradesSection(
+            @PathVariable(value = "subjectId") Long id,
+            @Valid @RequestBody SubjectGradeSection payload
+    ) {
+        subjectManager.addGradeSection(id, payload);
+        return new ApiResponse(true, "Section is added");
+    }
 
 }

@@ -5,6 +5,7 @@ import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
 import com.artur.engineer.payload.subjectSchedule.FullScheduleResponse;
 import com.artur.engineer.payload.subjectSchedule.FullScheduleResponseRow;
+import com.artur.engineer.payload.subjectSchedule.grades.FullGradesResponse;
 import com.artur.engineer.repositories.SubjectRepository;
 import com.artur.engineer.repositories.SubjectScheduleRepository;
 import com.artur.engineer.repositories.UserRepository;
@@ -106,6 +107,41 @@ public class SubjectReader {
 
         FullScheduleResponse response = new FullScheduleResponse();
         response.schedules = schedules;
+
+        Collection<SubjectSchedule> schedulesToSave = new ArrayList<>();
+
+
+        for (User user : subject.getGroup().getUsers()) {
+            FullScheduleResponseRow row = new FullScheduleResponseRow();
+            row.user = user;
+
+            for (SubjectSchedule schedule : schedules) {
+                SubjectPresence userPresence = schedule.getUserPresence(user);
+                if (userPresence == null) {
+                    userPresence = new SubjectPresence();
+                    userPresence.setUser(user);
+                    schedule.addPresence(userPresence);
+                    schedulesToSave.add(schedule);
+                }
+                row.presences.add(userPresence);
+            }
+            response.rows.add(row);
+        }
+
+        subjectScheduleRepository.saveAll(schedulesToSave);
+
+
+        return response;
+    }
+
+    public FullGradesResponse getSubjectFullGrades(Long subjectId) {
+
+        Subject subject = subjectReader.get(subjectId);
+
+        Collection<SubjectSchedule> schedules = subjectScheduleRepository.findAllBySubject(subject, Sort.by(Sort.Direction.ASC, "start"));
+
+        FullGradesResponse response = new FullGradesResponse();
+//        response.schedules = schedules;
 
         Collection<SubjectSchedule> schedulesToSave = new ArrayList<>();
 
