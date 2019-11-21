@@ -6,6 +6,7 @@ import com.artur.engineer.entities.Subject;
 import com.artur.engineer.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +26,9 @@ public interface GradeRepository extends CrudRepository<Grade, Integer> {
         Subject subject
     );
 
+    @Query("SELECT DISTINCT g.description FROM Grade g WHERE g.subject = :subject")
+    List<String> findDistinctDescriptionBySubject(
+            Subject subject,
+            Sort sort
+    );
 }

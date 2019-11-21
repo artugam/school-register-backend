@@ -5,7 +5,9 @@ import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
 import com.artur.engineer.payload.subjectSchedule.FullScheduleResponse;
 import com.artur.engineer.payload.subjectSchedule.FullScheduleResponseRow;
+import com.artur.engineer.payload.subjectSchedule.grades.FullGradeResponseRow;
 import com.artur.engineer.payload.subjectSchedule.grades.FullGradesResponse;
+import com.artur.engineer.repositories.GradeRepository;
 import com.artur.engineer.repositories.SubjectRepository;
 import com.artur.engineer.repositories.SubjectScheduleRepository;
 import com.artur.engineer.repositories.UserRepository;
@@ -17,10 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -46,6 +45,9 @@ public class SubjectReader {
 
     @Autowired
     private SubjectScheduleRepository subjectScheduleRepository;
+
+    @Autowired
+    private GradeRepository gradeRepository;
 
     public Subject get(Long id) {
         return repository.findById(id).orElseThrow(
@@ -138,33 +140,34 @@ public class SubjectReader {
 
         Subject subject = subjectReader.get(subjectId);
 
-        Collection<SubjectSchedule> schedules = subjectScheduleRepository.findAllBySubject(subject, Sort.by(Sort.Direction.ASC, "start"));
+        List<String> descriptions = gradeRepository.findDistinctDescriptionBySubject(subject, Sort.by(Sort.Direction.ASC, "createdAt"));
 
         FullGradesResponse response = new FullGradesResponse();
-//        response.schedules = schedules;
+        response.sections = descriptions;
 
-        Collection<SubjectSchedule> schedulesToSave = new ArrayList<>();
+        Collection<Grade> gradesToSave = new ArrayList<>();
 
-
+//        Collection<User> users = Arrays.sort(subject.getGroup().getUsers(), Comparator.comparing(User::getLastName));
         for (User user : subject.getGroup().getUsers()) {
-            FullScheduleResponseRow row = new FullScheduleResponseRow();
+            FullGradeResponseRow row = new FullGradeResponseRow();
             row.user = user;
 
-            for (SubjectSchedule schedule : schedules) {
+            for (String description : descriptions) {
 
-                SubjectPresence userPresence = schedule.getUserPresence(user);
-                if (userPresence == null) {
-                    userPresence = new SubjectPresence();
-                    userPresence.setUser(user);
-                    schedule.addPresence(userPresence);
-                    schedulesToSave.add(schedule);
+                Grade grade = user.getGrade(subject, description);
+                if (grade == null) {
+                    grade = new Grade();
+                    grade.setUser(user);
+                    grade.setSubject(subject);
+
+                    gradesToSave.add(grade);
                 }
-                row.presences.add(userPresence);
+                row.grades.add(grade);
             }
             response.rows.add(row);
         }
 
-        subjectScheduleRepository.saveAll(schedulesToSave);
+        gradeRepository.saveAll(gradesToSave);
 
 
         return response;

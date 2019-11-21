@@ -43,4 +43,5 @@ public interface SubjectScheduleRepository extends CrudRepository<SubjectSchedul
             @Param("dateEnd") Date end,
             Sort sort
     );
+
 }

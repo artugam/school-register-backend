@@ -18,6 +18,6 @@ public class FullGradesResponse {
     public List<String> sections = new ArrayList<>();
 
     @JsonView({PagedView.class})
-    public Collection<FullScheduleResponseRow> rows = new ArrayList<>();
+    public Collection<FullGradeResponseRow> rows = new ArrayList<>();
 
 }

@@ -1,5 +1,9 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.GradeView;
+import com.artur.engineer.engine.views.UserView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Arrays;
 
@@ -9,6 +13,7 @@ import java.util.Arrays;
 @Entity
 public class Grade extends BaseEntity {
 
+    public final static double GRADE_EMPTY = 0;
     public final static double GRADE_TWO = 2;
     public final static double GRADE_THREE = 3;
     public final static double GRADE_THREE_PLUS = 3.5;
@@ -16,7 +21,8 @@ public class Grade extends BaseEntity {
     public final static double GRADE_FOUR_PLUS = 4.5;
     public final static double GRADE_FIVE = 5;
 
-    public final static double ALLOWED_GRADES[] = {
+    public final static Double ALLOWED_GRADES[] = {
+            GRADE_EMPTY,
             GRADE_TWO,
             GRADE_THREE,
             GRADE_THREE_PLUS,
@@ -27,18 +33,23 @@ public class Grade extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView({GradeView.class})
     private Long id;
 
     @ManyToOne
     @JoinColumn
+    @JsonView({GradeView.class})
     private User user;
 
     @ManyToOne
     @JoinColumn
+    @JsonView({GradeView.class})
     private Subject subject;
 
+    @JsonView({GradeView.class})
     private double grade;
 
+    @JsonView({GradeView.class})
     private String description;
 
     public Long getId() {

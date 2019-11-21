@@ -3,6 +3,7 @@ package com.artur.engineer.entities;
 import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.lang.Override;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -150,6 +151,15 @@ public class User extends BaseEntity {
 
     public Collection<Grade> getGrades() {
         return grades;
+    }
+
+    public Grade getGrade(Subject subject, String description) {
+        for (Grade grade : this.grades) {
+            if(grade.getSubject().equals(subject) && grade.getDescription().equals(description)) {
+                return grade;
+            }
+        }
+        return null;
     }
 
     public void setGrades(Collection<Grade> grades) {
