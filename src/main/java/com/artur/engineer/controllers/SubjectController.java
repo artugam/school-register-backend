@@ -2,6 +2,7 @@ package com.artur.engineer.controllers;
 
 import com.artur.engineer.engine.managers.SubjectManager;
 import com.artur.engineer.engine.readers.SubjectReader;
+import com.artur.engineer.engine.views.ApiResponseView;
 import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.SubjectView;
 import com.artur.engineer.engine.views.UserView;
@@ -12,6 +13,7 @@ import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.course.CourseCreate;
 import com.artur.engineer.payload.subject.SubjectConfigurationOptions;
 import com.artur.engineer.payload.subject.SubjectCreate;
+import com.artur.engineer.payload.subject.SubjectGradeNameUpdatePayload;
 import com.artur.engineer.payload.subject.SubjectGradeSection;
 import com.artur.engineer.payload.subjectSchedule.FullScheduleResponse;
 import com.artur.engineer.payload.subjectSchedule.grades.FullGradesResponse;
@@ -124,8 +126,8 @@ public class SubjectController {
     }
 
     @PostMapping(path = "/{subjectId}/grades/section")
-    @JsonView({PagedView.class})
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @JsonView({ApiResponseView.class})
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     public @ResponseBody
     ApiResponse addGradesSection(
             @PathVariable(value = "subjectId") Long id,
@@ -133,6 +135,18 @@ public class SubjectController {
     ) {
         subjectManager.addGradeSection(id, payload);
         return new ApiResponse(true, "Section is added");
+    }
+
+    @PostMapping(path = "/{subjectId}/grades/name")
+    @JsonView({ApiResponseView.class})
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public @ResponseBody
+    ApiResponse updateGradesName(
+            @PathVariable(value = "subjectId") Long id,
+            @Valid @RequestBody SubjectGradeNameUpdatePayload payload
+    ) {
+        subjectManager.updateGradeSection(id, payload);
+        return new ApiResponse(true, "Name is updated");
     }
 
 }

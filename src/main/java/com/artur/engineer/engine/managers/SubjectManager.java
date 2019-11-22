@@ -6,6 +6,7 @@ import com.artur.engineer.entities.Grade;
 import com.artur.engineer.entities.Subject;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.subject.SubjectCreate;
+import com.artur.engineer.payload.subject.SubjectGradeNameUpdatePayload;
 import com.artur.engineer.payload.subject.SubjectGradeSection;
 import com.artur.engineer.repositories.GradeRepository;
 import com.artur.engineer.repositories.SubjectRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,6 +84,21 @@ public class SubjectManager {
             grade.setSubject(subject);
             grade.setUser(user);
             grade.setDescription(payload.getDescription());
+            gradesList.add(grade);
+        }
+
+        gradeRepository.saveAll(gradesList);
+
+
+    }
+
+    public void updateGradeSection(Long id, SubjectGradeNameUpdatePayload payload) {
+
+        Collection<Grade> grades = gradeRepository.findDistinctDescriptionBySubject(id, payload.getOldDescription());
+
+        List<Grade> gradesList = new ArrayList<>();
+        for (Grade grade : grades) {
+            grade.setDescription(payload.getNewDescription());
             gradesList.add(grade);
         }
 

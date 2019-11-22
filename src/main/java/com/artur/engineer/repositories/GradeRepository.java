@@ -31,4 +31,10 @@ public interface GradeRepository extends CrudRepository<Grade, Integer> {
             Subject subject,
             Sort sort
     );
+
+    @Query("SELECT g FROM Grade g JOIN g.subject s WHERE s.id = :subjectId AND g.description = :descrption")
+    Collection<Grade> findDistinctDescriptionBySubject(
+            @Param("subjectId") Long subjectId,
+            @Param("descrption") String description
+    );
 }
