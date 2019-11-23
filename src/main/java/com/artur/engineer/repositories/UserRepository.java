@@ -5,6 +5,7 @@ import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +17,8 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Integer> {
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByPasswordResetToken(String token);
 
     Optional<User> findByEmailAndIdNot(String email, Long id);
 
@@ -47,6 +50,13 @@ public interface UserRepository extends CrudRepository<User, Integer> {
             @Param("search") String search,
             Pageable pageable
     );
+
+    @Query("select u from User u join u.groups c where c.id = :courseGroupId")
+    Collection<User> findAllByCourseGroupId(
+            @Param("courseGroupId") Long courseGroupId,
+            Sort sort
+    );
+
 
     void deleteById(Long id);
 

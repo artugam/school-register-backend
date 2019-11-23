@@ -8,6 +8,7 @@ import com.artur.engineer.engine.views.PagedView;
 import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.UserView;
 import com.artur.engineer.entities.*;
+import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.JwtAuthenticationResponse;
 import com.artur.engineer.payload.LoginRequest;
 import com.artur.engineer.payload.PagedResponse;
@@ -160,14 +161,6 @@ public class AuthenticationController {
             @RequestParam(required = false) Date start,
             @RequestParam(required = false) Date end
     ) throws ParseException {
-//        DateFormat formatStart = new SimpleDateFormat("YYYY-MM-DD, HH:mm:ss");
-//        Date startDate = formatStart.parse(start);
-
-//        DateFormat formatEnd = new SimpleDateFormat("YYYY-MM-DD, HH:mm:ss");
-//        Date endDate = formatEnd.parse(end);
-
         return subjectScheduleReader.getScheduleSubjects(currentUser, start, end);
     }
-//    @RequestParam(required = false) @DateTimeFormat(pattern = "YYYY-MM-DD HH:mm:ss.sss") Date start,
-//    @RequestParam(required = false) @DateTimeFormat(pattern = "YYYY-MM-DD HH:mm:ss.sss") Date end
 }

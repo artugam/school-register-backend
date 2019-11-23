@@ -94,7 +94,7 @@ public class SubjectManager {
 
     public void updateGradeSection(Long id, SubjectGradeNameUpdatePayload payload) {
 
-        Collection<Grade> grades = gradeRepository.findDistinctDescriptionBySubject(id, payload.getOldDescription());
+        Collection<Grade> grades = gradeRepository.findByDescriptionBySubject(id, payload.getOldDescription());
 
         List<Grade> gradesList = new ArrayList<>();
         for (Grade grade : grades) {
@@ -103,7 +103,11 @@ public class SubjectManager {
         }
 
         gradeRepository.saveAll(gradesList);
+    }
 
+    public void deleteGradeSection(Long id, String description) {
 
+        Collection<Grade> grades = gradeRepository.findByDescriptionBySubject(id, description);
+        gradeRepository.deleteAll(grades);
     }
 }

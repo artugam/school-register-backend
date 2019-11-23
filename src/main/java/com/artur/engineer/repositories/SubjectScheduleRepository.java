@@ -34,7 +34,7 @@ public interface SubjectScheduleRepository extends CrudRepository<SubjectSchedul
 
     @Query("select u from SubjectSchedule u " +
             "join u.subject s " +
-            "WHERE s.group IN (:groups) " +
+            "WHERE s.group IN :groups " +
             "AND u.start > :dateStart " +
             "AND u.end < :dateEnd ")
     Collection<SubjectSchedule> getScheduleForGroups(

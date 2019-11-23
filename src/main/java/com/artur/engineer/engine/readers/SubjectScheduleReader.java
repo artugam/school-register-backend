@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -90,6 +91,9 @@ public class SubjectScheduleReader {
     public Collection<SubjectSchedule> getScheduleSubjects(UserPrincipal currentUser, Date start, Date end) {
 
         User user = userReader.get(currentUser.getId());
+        if(user.getGroups().isEmpty()) {
+            return new ArrayList<SubjectSchedule>();
+        }
 
         return subjectScheduleRepository.getScheduleForGroups(
                 user.getGroups(),

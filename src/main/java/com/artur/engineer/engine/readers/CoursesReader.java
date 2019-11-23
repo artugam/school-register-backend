@@ -47,7 +47,7 @@ public class CoursesReader {
         return new PagedResponse<>(query);
     }
 
-//    public PagedResponse<UserIdPayload> getStudents(Long courseId, int page, int size, String sortField, String direction, String search) {
+//    publics PagedResponse<UserIdPayload> getStudents(Long courseId, int page, int size, String sortField, String direction, String search) {
 //        Sort.Direction chooseDirection = Sort.Direction.ASC;
 //        if (direction.equals("DESC")) {
 //            chooseDirection = Sort.Direction.DESC;

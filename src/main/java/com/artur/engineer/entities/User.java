@@ -28,6 +28,11 @@ public class User extends BaseEntity {
 
     private String password;
 
+    @JsonView({UserView.class, SubjectScheduleFullView.class})
+    private String uniqueNumber;
+
+    private String passwordResetToken;
+
     @JsonView(UserView.class)
     private boolean enabled;
 
@@ -253,5 +258,21 @@ public class User extends BaseEntity {
     public void setNotifications(Collection<Notification> notifications) {
         this.notifications = notifications;
 
+    }
+
+    public String getUniqueNumber() {
+        return uniqueNumber;
+    }
+
+    public void setUniqueNumber(String uniqueNumber) {
+        this.uniqueNumber = uniqueNumber;
+    }
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
     }
 }

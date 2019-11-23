@@ -149,4 +149,16 @@ public class SubjectController {
         return new ApiResponse(true, "Name is updated");
     }
 
+    @DeleteMapping(path = "/{subjectId}/grades/section/{description}")
+    @JsonView({ApiResponseView.class})
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public @ResponseBody
+    ApiResponse deleteGradesSection(
+            @PathVariable(value = "subjectId") Long id,
+            @PathVariable(value = "description") String description
+    ) {
+        subjectManager.deleteGradeSection(id, description);
+        return new ApiResponse(true, "Section is deleted");
+    }
+
 }

@@ -112,8 +112,9 @@ public class SubjectReader {
 
         Collection<SubjectSchedule> schedulesToSave = new ArrayList<>();
 
+        Collection<User> users = userRepository.findAllByCourseGroupId(subject.getGroup().getId(), Sort.by(Sort.Direction.ASC, "lastName"));
 
-        for (User user : subject.getGroup().getUsers()) {
+        for (User user : users) {
             FullScheduleResponseRow row = new FullScheduleResponseRow();
             row.user = user;
 
@@ -147,8 +148,9 @@ public class SubjectReader {
 
         Collection<Grade> gradesToSave = new ArrayList<>();
 
-//        Collection<User> users = Arrays.sort(subject.getGroup().getUsers(), Comparator.comparing(User::getLastName));
-        for (User user : subject.getGroup().getUsers()) {
+        Collection<User> users = userRepository.findAllByCourseGroupId(subject.getGroup().getId(), Sort.by(Sort.Direction.ASC, "lastName"));
+
+        for (User user : users) {
             FullGradeResponseRow row = new FullGradeResponseRow();
             row.user = user;
 

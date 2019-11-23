@@ -95,7 +95,7 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /*@Bean
-    public UserDetailsService userDetailsService() {
+    publics UserDetailsService userDetailsService() {
         //ok for demo
         UserIdPayload.UserBuilder users = UserIdPayload.withDefaultPasswordEncoder();
 
