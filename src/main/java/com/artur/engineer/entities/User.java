@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import java.lang.Override;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
@@ -56,7 +57,7 @@ public class User extends BaseEntity {
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "course_id", referencedColumnName = "id"))
-    private Collection<Course> courses;
+    private Collection<Course> courses = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -141,6 +142,7 @@ public class User extends BaseEntity {
     }
 
     public void addCourse(Course course) {
+
         if(!this.courses.contains(course)) {
             this.courses.add(course);
             course.addUser(this);

@@ -99,9 +99,12 @@ public class UserController {
 
     @PostMapping(path = "/upload/csv")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ApiResponse uploadUsersCsvFile(@RequestParam("file") MultipartFile file) throws ApiException, IOException{
-        return userManager.addUsersFromCsv(file);
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    public ApiResponse uploadUsersCsvFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("courseId") Long courseId
+    ) throws ApiException, IOException{
+        return userManager.addUsersFromCsv(file, courseId);
     }
 
 
