@@ -31,4 +31,11 @@ public interface SubjectRepository extends CrudRepository<Subject, Integer> {
 
     Collection<Subject> findAll();
 
+    @Query("select u from Subject u join u.group c join c.users users where users.id = :userId AND ( u.name LIKE %:search%)")
+    Page<Subject> findAllSubjectByUserId (
+            @Param("userId") Long userId,
+            @Param("search") String search,
+            Pageable pageable
+    );
+
 }

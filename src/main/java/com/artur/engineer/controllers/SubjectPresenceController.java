@@ -36,7 +36,7 @@ public class SubjectPresenceController {
 
     @GetMapping(path = "/configuration/options")
     @JsonView({SubjectPresenceView.class})
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public @ResponseBody
     SubjectPresenceConfigurationOptions getConfiguration() {
         return reader.getConfiguration();

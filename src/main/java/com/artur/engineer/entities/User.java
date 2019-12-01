@@ -3,6 +3,7 @@ package com.artur.engineer.entities;
 import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
+
 import java.lang.Override;
 
 import javax.persistence.*;
@@ -132,6 +133,17 @@ public class User extends BaseEntity {
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }
+    public void addRole(Role role) {
+        if(!this.roles.contains(role)) {
+            this.roles.add(role);
+        }
+    }
+
+    public void removeRole(Role role) {
+        if(this.roles.contains(role)) {
+            this.roles.remove(role);
+        }
+    }
 
     public Collection<Course> getCourses() {
         return courses;
@@ -143,14 +155,14 @@ public class User extends BaseEntity {
 
     public void addCourse(Course course) {
 
-        if(!this.courses.contains(course)) {
+        if (!this.courses.contains(course)) {
             this.courses.add(course);
             course.addUser(this);
         }
     }
 
     public void removeCourse(Course course) {
-        if(this.courses.contains(course)) {
+        if (this.courses.contains(course)) {
             this.courses.remove(course);
             course.removeUser(this);
         }
@@ -162,7 +174,13 @@ public class User extends BaseEntity {
 
     public Grade getGrade(Subject subject, String description) {
         for (Grade grade : this.grades) {
-            if(grade.getSubject().equals(subject) && grade.getDescription().equals(description)) {
+            if (
+                    null != grade &&
+                    null != grade.getSubject() &&
+                    grade.getSubject().equals(subject) &&
+                    null != grade.getDescription() &&
+                    grade.getDescription().equals(description)
+            ) {
                 return grade;
             }
         }
@@ -190,14 +208,14 @@ public class User extends BaseEntity {
     }
 
     public void addForemanCourse(Course course) {
-        if(!this.foremanCourses.contains(course)) {
+        if (!this.foremanCourses.contains(course)) {
             this.foremanCourses.add(course);
             course.setForeman(this);
         }
     }
 
     public void removeForemanCourse(Course course) {
-        if(this.foremanCourses.contains(course)) {
+        if (this.foremanCourses.contains(course)) {
             this.foremanCourses.remove(course);
             course.setForeman(null);
         }
@@ -212,42 +230,42 @@ public class User extends BaseEntity {
     }
 
     public void addGroup(CourseGroup group) {
-        if(!this.groups.contains(group)) {
+        if (!this.groups.contains(group)) {
             this.groups.add(group);
             group.addUser(this);
         }
     }
 
     public void removeGroup(CourseGroup group) {
-        if(this.groups.contains(group)) {
+        if (this.groups.contains(group)) {
             this.groups.remove(group);
             group.removeUser(this);
         }
     }
 
     public void addTeachSubject(Subject subject) {
-        if(!this.teachSubjects.contains(subject)) {
+        if (!this.teachSubjects.contains(subject)) {
             this.teachSubjects.add(subject);
             subject.addTeacher(this);
         }
     }
-    public void removeTeachSubject(Subject subject)
-    {
-        if(this.teachSubjects.contains(subject)) {
+
+    public void removeTeachSubject(Subject subject) {
+        if (this.teachSubjects.contains(subject)) {
             this.teachSubjects.remove(subject);
             subject.removeTeacher(this);
         }
     }
 
     public void addNotification(Notification notification) {
-        if(!this.notifications.contains(notification)) {
+        if (!this.notifications.contains(notification)) {
             this.notifications.add(notification);
             notification.setCreator(this);
         }
     }
 
     public void removeNotification(Notification notification) {
-        if(this.notifications.contains(notification)) {
+        if (this.notifications.contains(notification)) {
             this.notifications.remove(notification);
             notification.setCreator(null);
         }

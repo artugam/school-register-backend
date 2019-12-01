@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 
 /**
@@ -91,9 +91,23 @@ public class SubjectScheduleReader {
     public Collection<SubjectSchedule> getScheduleSubjects(UserPrincipal currentUser, Date start, Date end) {
 
         User user = userReader.get(currentUser.getId());
+
+        if(currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_TEACHER))) {
+            List<User> teachers = new ArrayList<>();
+            teachers.add(user);
+
+            return subjectScheduleRepository.getScheduleForTeachers(
+                    teachers,
+                    start,
+                    end,
+                    Sort.by(Sort.Direction.ASC, "start"
+                    ));
+        }
+
         if(user.getGroups().isEmpty()) {
             return new ArrayList<SubjectSchedule>();
         }
+
 
         return subjectScheduleRepository.getScheduleForGroups(
                 user.getGroups(),

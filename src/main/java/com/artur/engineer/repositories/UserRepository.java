@@ -33,7 +33,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
             Pageable pageable
     );
 
-    @Query("select u from User u join u.courses c join u.roles r where c.id = :courseId AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
+    @Query("select u from User u join u.courses c where c.id = :courseId AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
     Page<User> findAllByCourseIdCustomQuery(
             @Param("courseId") Long courseId,
             @Param("search") String search,

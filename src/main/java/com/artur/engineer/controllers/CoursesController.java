@@ -98,14 +98,14 @@ public class CoursesController {
     @GetMapping(path = "/{courseId}")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({CourseWithUserView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
     public Course getCourse(@PathVariable(value = "courseId") Long id) {
         return reader.get(id);
     }
 
     @GetMapping(path = "/configuration/options")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
     public CourseConfigurationResponse getConfiguration() {
         return reader.getConfiguration();
     }
@@ -138,7 +138,7 @@ public class CoursesController {
     @DeleteMapping(path = "/{courseId}/students")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({PagedView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
     public ApiResponse deleteCourseUsers(
             @PathVariable(value = "courseId") Long id,
             @RequestBody StudentsIds courseRemoveStudents
@@ -150,7 +150,7 @@ public class CoursesController {
     @PostMapping(path = "/{courseId}/students")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({ApiResponseView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
     public ApiResponse addCourseUsers(
             @PathVariable(value = "courseId") Long id,
             @Valid @RequestBody StudentsIds studentsIds
@@ -163,7 +163,7 @@ public class CoursesController {
 
     @GetMapping(path = "/{courseId}/notStudents")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
     @JsonView({UserView.class})
     public List<User> getUsersNotInCourse(
             @PathVariable(value = "courseId") Long id

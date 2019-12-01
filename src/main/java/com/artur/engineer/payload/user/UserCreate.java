@@ -22,6 +22,9 @@ public class UserCreate {
     @NotBlank
     protected String lastName;
 
+    @NotBlank
+    protected String uniqueNumber;
+
     @NotNull
     protected Long role;
 
@@ -56,5 +59,13 @@ public class UserCreate {
 
     public void setRole(Long role) {
         this.role = role;
+    }
+
+    public String getUniqueNumber() {
+        return uniqueNumber;
+    }
+
+    public void setUniqueNumber(String uniqueNumber) {
+        this.uniqueNumber = uniqueNumber;
     }
 }

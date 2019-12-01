@@ -10,6 +10,7 @@ import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
+import com.artur.engineer.payload.user.UserPassword;
 import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +46,7 @@ public class UserManager {
     @Autowired
     private UserReader userReader;
 
-    public User createOrUpdate(User user, String firstName, String lastName, String email, String password, Collection<Role> roles, boolean enabled) throws ApiException {
+    public User createOrUpdate(User user, String firstName, String lastName, String email, String password, Collection<Role> roles, boolean enabled, String uniqueNumber) throws ApiException {
 
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -55,17 +56,18 @@ public class UserManager {
         }
         user.setRoles(roles);
         user.setEnabled(enabled);
+        user.setUniqueNumber(uniqueNumber);
 
         return userRepository.save(user);
     }
 
     public User create(UserCreateWithPassword userCreate) throws ApiException {
-        return this.createOrUpdate(new User(), userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), userCreate.getPassword(), roleReader.getUserRoles(userCreate.getRole()), true);
+        return this.createOrUpdate(new User(), userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), userCreate.getPassword(), roleReader.getUserRoles(userCreate.getRole()), true, userCreate.getUniqueNumber());
     }
 
     public User edit(Long id, UserCreate userCreate) throws ApiException {
         User user = userReader.get(id);
-        return this.createOrUpdate(user, userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), "", roleReader.getUserRoles(userCreate.getRole()), true);
+        return this.createOrUpdate(user, userCreate.getFirstName(), userCreate.getLastName(), userCreate.getEmail(), "", roleReader.getUserRoles(userCreate.getRole()), true, userCreate.getUniqueNumber());
     }
 
     @Transactional
@@ -84,6 +86,14 @@ public class UserManager {
     public User setUserStatus(Long id, boolean status) {
         User user = userReader.get(id);
         user.setEnabled(status);
+        userRepository.save(user);
+
+        return user;
+    }
+
+    public User setPassword(Long id, UserPassword payload) {
+        User user = userReader.get(id);
+        user.setPassword(passwordEncoder.encode(payload.getPassword()));
         userRepository.save(user);
 
         return user;

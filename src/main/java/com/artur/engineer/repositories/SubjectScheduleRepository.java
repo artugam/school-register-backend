@@ -4,6 +4,7 @@ package com.artur.engineer.repositories;
 import com.artur.engineer.entities.CourseGroup;
 import com.artur.engineer.entities.Subject;
 import com.artur.engineer.entities.SubjectSchedule;
+import com.artur.engineer.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public interface SubjectScheduleRepository extends CrudRepository<SubjectSchedule, Integer> {
@@ -43,5 +45,20 @@ public interface SubjectScheduleRepository extends CrudRepository<SubjectSchedul
             @Param("dateEnd") Date end,
             Sort sort
     );
+
+    @Query("select u from SubjectSchedule u " +
+            "JOIN u.subject s " +
+            "JOIN s.teachers t " +
+            "WHERE t IN (:teachers) " +
+            "AND u.start > :dateStart " +
+            "AND u.end < :dateEnd ")
+    Collection<SubjectSchedule> getScheduleForTeachers(
+            @Param("teachers") Collection<User> teachers,
+            @Param("dateStart") Date start,
+            @Param("dateEnd") Date end,
+            Sort sort
+    );
+
+//            @Param("teachers") List<User> teachers,
 
 }

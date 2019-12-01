@@ -1,6 +1,7 @@
 package com.artur.engineer.controllers;
 
 import com.artur.engineer.engine.exceptions.ApiException;
+import com.artur.engineer.engine.managers.ProfileManager;
 import com.artur.engineer.engine.managers.UserManager;
 import com.artur.engineer.engine.readers.NotificationReader;
 import com.artur.engineer.engine.readers.SubjectScheduleReader;
@@ -12,6 +13,8 @@ import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.JwtAuthenticationResponse;
 import com.artur.engineer.payload.LoginRequest;
 import com.artur.engineer.payload.PagedResponse;
+import com.artur.engineer.payload.grade.GradesUpdatePayload;
+import com.artur.engineer.payload.profile.ProfileUpdatePayload;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.repositories.RoleRepository;
 import com.artur.engineer.repositories.UserRepository;
@@ -37,6 +40,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -70,6 +74,9 @@ public class AuthenticationController {
 
     @Autowired
     SubjectScheduleReader subjectScheduleReader;
+
+    @Autowired
+    ProfileManager profileManager;
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -162,5 +169,31 @@ public class AuthenticationController {
             @RequestParam(required = false) Date end
     ) throws ParseException {
         return subjectScheduleReader.getScheduleSubjects(currentUser, start, end);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PatchMapping(path = "/me/profile")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({UserView.class})
+    public User update (
+            @CurrentUser UserPrincipal currentUser,
+            @Valid @RequestBody ProfileUpdatePayload payload
+    )  {
+        return profileManager.update(currentUser, payload);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping(path = "/me/profile/subjects")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({PagedView.class})
+    public PagedResponse<Subject> profileSubjects (
+            @CurrentUser UserPrincipal currentUser,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer records,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @RequestParam(required = false, defaultValue = "") String search
+    )  {
+        return profileManager.getProfileSubjects(currentUser, page, records, sortField, sortDirection, search);
     }
 }

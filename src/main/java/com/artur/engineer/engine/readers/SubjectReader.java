@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
@@ -33,6 +34,9 @@ public class SubjectReader {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserReader userReader;
 
     @Autowired
     private SubjectRepository repository;
@@ -101,7 +105,7 @@ public class SubjectReader {
         return new PagedResponse<>(query);
     }
 
-    public FullScheduleResponse getSubjectFullSchedule(Long subjectId) {
+    public FullScheduleResponse getSubjectFullSchedule(Long subjectId, UserPrincipal userPrincipal) {
 
         Subject subject = subjectReader.get(subjectId);
 
@@ -113,6 +117,15 @@ public class SubjectReader {
         Collection<SubjectSchedule> schedulesToSave = new ArrayList<>();
 
         Collection<User> users = userRepository.findAllByCourseGroupId(subject.getGroup().getId(), Sort.by(Sort.Direction.ASC, "lastName"));
+
+        boolean test = userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_USER));
+
+
+        if (!userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_TEACHER))
+        ) {
+            users = Arrays.asList(userReader.get(userPrincipal.getId()));
+        }
+
 
         for (User user : users) {
             FullScheduleResponseRow row = new FullScheduleResponseRow();
@@ -137,7 +150,7 @@ public class SubjectReader {
         return response;
     }
 
-    public FullGradesResponse getSubjectFullGrades(Long subjectId) {
+    public FullGradesResponse getSubjectFullGrades(Long subjectId, UserPrincipal userPrincipal) {
 
         Subject subject = subjectReader.get(subjectId);
 
@@ -150,6 +163,11 @@ public class SubjectReader {
 
         Collection<User> users = userRepository.findAllByCourseGroupId(subject.getGroup().getId(), Sort.by(Sort.Direction.ASC, "lastName"));
 
+        if (!userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_TEACHER)))
+        {
+            users = Arrays.asList(userReader.get(userPrincipal.getId()));
+        }
+
         for (User user : users) {
             FullGradeResponseRow row = new FullGradeResponseRow();
             row.user = user;
@@ -161,6 +179,7 @@ public class SubjectReader {
                     grade = new Grade();
                     grade.setUser(user);
                     grade.setSubject(subject);
+                    grade.setDescription(description);
 
                     gradesToSave.add(grade);
                 }

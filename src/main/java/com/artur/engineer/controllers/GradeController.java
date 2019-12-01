@@ -35,7 +35,7 @@ public class GradeController {
 
     @GetMapping(path = "/configuration/options")
     @JsonView({GradeView.class})
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public @ResponseBody
     GradeConfigurationOptions getConfiguration() {
         return reader.getConfiguration();

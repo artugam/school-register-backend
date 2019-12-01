@@ -18,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
@@ -51,7 +49,33 @@ public class SubjectScheduleManager {
     }
 
     public SubjectSchedule create(SubjectScheduleCreate payload) {
-        return this.createOrUpdate(new SubjectSchedule(), payload.getStart(), payload.getEnd(), payload.getSubjectId(), payload.getDescription());
+
+        SubjectSchedule schedule = null;
+        Date start = payload.getStart();
+        Date end = payload.getEnd();
+        for (int i = 0; i < payload.getAmount(); i++) {
+
+            schedule = this.createOrUpdate(new SubjectSchedule(), start, end, payload.getSubjectId(), payload.getDescription());
+
+            if (!Arrays.asList(SubjectScheduleCreate.ALLOWED_FREQUENCIES).contains(payload.getFrequency())) {
+                return schedule;
+            }
+
+
+            int days = payload.getFrequency().equals(SubjectScheduleCreate.FREQUENCY_ONE_WEEK) ? 7 : 14;
+
+            // convert date to calendar
+            Calendar c = Calendar.getInstance();
+            c.setTime(start);
+            c.add(Calendar.DAY_OF_MONTH, days);
+            start = c.getTime();
+
+            c.setTime(end);
+            c.add(Calendar.DAY_OF_MONTH, days);
+            end = c.getTime();
+        }
+
+        return schedule;
     }
 
     public SubjectSchedule edit(Long id, SubjectScheduleCreate payload) {

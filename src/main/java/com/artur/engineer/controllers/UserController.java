@@ -10,6 +10,7 @@ import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
+import com.artur.engineer.payload.user.UserPassword;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -95,6 +96,17 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User unblockUser(@PathVariable(value = "userId") Long id) {
         return userManager.unblock(id);
+    }
+
+    @PatchMapping(path = "/{userId}/password")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({UserView.class})
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public User setPassword(
+            @PathVariable(value = "userId") Long id,
+            @Valid @RequestBody UserPassword payload
+    ) {
+        return userManager.setPassword(id, payload);
     }
 
     @PostMapping(path = "/upload/csv")

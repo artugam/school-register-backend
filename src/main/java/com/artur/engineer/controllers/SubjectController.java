@@ -18,6 +18,8 @@ import com.artur.engineer.payload.subject.SubjectGradeSection;
 import com.artur.engineer.payload.subjectSchedule.FullScheduleResponse;
 import com.artur.engineer.payload.subjectSchedule.grades.FullGradesResponse;
 import com.artur.engineer.repositories.SubjectRepository;
+import com.artur.engineer.security.CurrentUser;
+import com.artur.engineer.security.UserPrincipal;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,7 +46,7 @@ public class SubjectController {
 
     @GetMapping(path = "/{subjectId}")
     @JsonView({PagedView.class})
-    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public @ResponseBody
     Subject getSubject(@PathVariable(value = "subjectId") Long id) {
         return subjectReader.get(id);
@@ -53,7 +55,7 @@ public class SubjectController {
 
     @GetMapping(path = "/configuration/options")
     @JsonView({UserView.class})
-    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public @ResponseBody
     SubjectConfigurationOptions getConfiguration() {
         return subjectReader.getConfiguration();
@@ -92,7 +94,7 @@ public class SubjectController {
 
     @GetMapping(path = "/{subjectId}/schedule")
     @JsonView({PagedView.class})
-    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public @ResponseBody
     PagedResponse<SubjectSchedule> getGroupSubjects(
             @PathVariable(value = "subjectId") Long id,
@@ -110,9 +112,10 @@ public class SubjectController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public @ResponseBody
     FullScheduleResponse fullSchedule(
+            @CurrentUser UserPrincipal currentUser,
             @PathVariable(value = "subjectId") Long id
     ) {
-        return subjectReader.getSubjectFullSchedule(id);
+        return subjectReader.getSubjectFullSchedule(id, currentUser);
     }
 
     @GetMapping(path = "/{subjectId}/grades/full")
@@ -120,9 +123,10 @@ public class SubjectController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public @ResponseBody
     FullGradesResponse fullGradesSchedule(
+            @CurrentUser UserPrincipal currentUser,
             @PathVariable(value = "subjectId") Long id
     ) {
-        return subjectReader.getSubjectFullGrades(id);
+        return subjectReader.getSubjectFullGrades(id, currentUser);
     }
 
     @PostMapping(path = "/{subjectId}/grades/section")

@@ -166,7 +166,10 @@ public class Course extends BaseEntity {
 
     public void setForeman(User foreman) {
         this.foreman = foreman;
-        foreman.addCourse(this);
+        if(null != foreman) {
+            foreman.addCourse(this);
+        }
+
     }
 
 
