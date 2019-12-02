@@ -33,10 +33,10 @@ public class CourseGroup extends BaseEntity {
     @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
     private Collection<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Subject> subjects;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Notification> notifications;
 
     public Long getId() {

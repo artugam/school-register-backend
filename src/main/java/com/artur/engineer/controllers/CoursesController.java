@@ -15,6 +15,8 @@ import com.artur.engineer.payload.course.CourseCreate;
 import com.artur.engineer.payload.course.StudentsIds;
 import com.artur.engineer.payload.user.UserIdPayload;
 import com.artur.engineer.repositories.CourseRepository;
+import com.artur.engineer.security.CurrentUser;
+import com.artur.engineer.security.UserPrincipal;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,13 +55,14 @@ public class CoursesController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({PagedView.class})
     public PagedResponse<Course> getAll(
+            @CurrentUser UserPrincipal currentUser,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer records,
             @RequestParam(required = false, defaultValue = "id") String sortField,
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
             @RequestParam(required = false, defaultValue = "") String search
     ) {
-        return reader.getAll(page, records, sortField, sortDirection, search);
+        return reader.getAll(page, records, sortField, sortDirection, search, currentUser);
     }
 
     @PreAuthorize("hasRole('ROLE_SUPER_USER')")
@@ -173,7 +176,7 @@ public class CoursesController {
 
     @PostMapping(path = "/{courseId}/foreman")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     @JsonView({CourseWithUserView.class})
     public Course addCourseForeman(
             @PathVariable(value = "courseId") Long id,

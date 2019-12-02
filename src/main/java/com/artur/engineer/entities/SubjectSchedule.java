@@ -26,7 +26,7 @@ public class SubjectSchedule extends BaseEntity {
     private Subject subject;
 
     @JsonView(SubjectScheduleView.class)
-    @OneToMany(mappedBy = "subjectSchedule", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subjectSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<SubjectPresence> presences;
 
     @JsonView(SubjectScheduleView.class)

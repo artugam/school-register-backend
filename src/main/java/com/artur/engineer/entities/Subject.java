@@ -35,10 +35,10 @@ public class Subject extends BaseEntity {
     @JsonView({SubjectView.class, SubjectScheduleFullView.class})
     private String type;
 
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<SubjectSchedule> subjectSchedule;
 
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Grade> grades;
 
     @ManyToOne
@@ -56,7 +56,7 @@ public class Subject extends BaseEntity {
                     name = "subject_id", referencedColumnName = "id"))
     private Collection<User> teachers;
 
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Notification> notifications;
 
     public Long getId() {

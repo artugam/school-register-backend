@@ -30,6 +30,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -121,7 +123,7 @@ public class AuthenticationController {
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
             @RequestParam(required = false, defaultValue = "") String search
     ) {
-        if(currentUser.getAuthorities().contains(Role.ROLE_ADMIN)) {
+        if(currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_ADMIN))) {
             return notificationReader.getNotifications(page, records, sortField, sortDirection, search);
         }
         return notificationReader.getNotifications(currentUser.getId(), page, records, sortField, sortDirection, search);
