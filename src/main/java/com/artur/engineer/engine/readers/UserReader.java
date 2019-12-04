@@ -14,9 +14,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.RollbackException;
 import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -41,22 +43,33 @@ public class UserReader {
         );
     }
 
-    public PagedResponse<User> getAllUsers(int page, int size, String sortField, String direction, String search) {
+    public PagedResponse<User> getAllUsers(int page, int size, String sortField, String direction, String search, String role) {
 
         Sort.Direction chooseDirection = Sort.Direction.ASC;
         if (direction.equals("DESC")) {
             chooseDirection = Sort.Direction.DESC;
         }
 
-//        Page<UserIdPayload> query = this.userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(
-//                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
-//                search
-//        );
-        Page<User> query = this.userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(
-                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
+        List<String> notRoles = new ArrayList<>();
+        if (Role.ROLE_ADMIN.equals(role)) {
+            notRoles.add("it doest not exists");
+        } else if (Role.ROLE_TEACHER.equals(role)) {
+            notRoles.add(Role.ROLE_ADMIN);
+        } else if (Role.ROLE_SUPER_USER.equals(role)) {
+            notRoles.add(Role.ROLE_ADMIN);
+            notRoles.add(Role.ROLE_TEACHER);
+        } else {
+            notRoles.add(Role.ROLE_ADMIN);
+            notRoles.add(Role.ROLE_TEACHER);
+            notRoles.add(Role.ROLE_SUPER_USER);
+        }
+
+
+        Page<User> query = this.userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAndRolesIn(
                 search,
-                search,
-                search
+                Arrays.asList(role),
+                notRoles,
+                PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
         );
         return new PagedResponse<>(query);
     }
@@ -67,7 +80,7 @@ public class UserReader {
             chooseDirection = Sort.Direction.DESC;
         }
 
-        Page<User> query = userRepository.findAllByCourseId(
+        Page<User> query = userRepository.findAllByCourseIdCustomQuery(
                 courseId,
                 search,
                 PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
@@ -78,7 +91,7 @@ public class UserReader {
     public List<User> getUserNotInCourse(Long id) {
         List<User> users = userRepository.findAllByOrderByLastNameAsc();
         List<Role> roles = roleRepository.findAllByNameIn(Arrays.asList(Role.ROLE_ADMIN, Role.ROLE_TEACHER));
-        Course course    = courseRepository.findById(id).get();
+        Course course = courseRepository.findById(id).get();
 
         List<User> usersOut = new ArrayList<>();
 
@@ -93,5 +106,11 @@ public class UserReader {
         }
 
         return usersOut;
+    }
+
+    public Collection<User> getAllUsersByCourseId(Long courseId) {
+
+        Collection<Course> courses = courseRepository.findAllByIdIn(Arrays.asList(courseId));
+        return userRepository.findAllByCoursesIn(courses);
     }
 }

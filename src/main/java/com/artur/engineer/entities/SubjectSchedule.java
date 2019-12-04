@@ -1,5 +1,10 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
+import com.artur.engineer.engine.views.SubjectScheduleView;
+import com.artur.engineer.engine.views.UserView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
@@ -12,41 +17,33 @@ public class SubjectSchedule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @JsonView(SubjectScheduleView.class)
+    private Long id;
 
     @ManyToOne
     @JoinColumn
+    @JsonView(SubjectScheduleFullView.class)
     private Subject subject;
 
-    @ManyToMany
-    @JoinTable(
-            name = "subject_teachers",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "subject_schedule_id", referencedColumnName = "id"))
-    private Collection<User> teachers;
+    @JsonView(SubjectScheduleView.class)
+    @OneToMany(mappedBy = "subjectSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<SubjectPresence> presences;
 
-    @ManyToMany
-    @JoinTable(
-            name = "subject_students",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "subject_schedule_id", referencedColumnName = "id"))
-    private Collection<User> students;
-
-    @OneToMany(mappedBy = "subjectSchedule", cascade = CascadeType.ALL)
-    private Collection<Grade> grades;
-
+    @JsonView(SubjectScheduleView.class)
     private Date start;
+
+    @JsonView(SubjectScheduleView.class)
     private Date end;
 
-    public Integer getId() {
+    @JsonView(SubjectScheduleView.class)
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -58,28 +55,28 @@ public class SubjectSchedule extends BaseEntity {
         this.subject = subject;
     }
 
-    public Collection<User> getTeachers() {
-        return teachers;
+    public Collection<SubjectPresence> getPresences() {
+        return presences;
     }
 
-    public void setTeachers(Collection<User> teachers) {
-        this.teachers = teachers;
+    public void setPresences(Collection<SubjectPresence> presences) {
+        this.presences = presences;
     }
 
-    public Collection<User> getStudents() {
-        return students;
+    public void addPresence(SubjectPresence presence) {
+        if (!this.presences.contains(presence)) {
+            this.presences.add(presence);
+            presence.setSubjectSchedule(this);
+        }
     }
 
-    public void setStudents(Collection<User> students) {
-        this.students = students;
-    }
-
-    public Collection<Grade> getGrades() {
-        return grades;
-    }
-
-    public void setGrades(Collection<Grade> grades) {
-        this.grades = grades;
+    public SubjectPresence getUserPresence(User user) {
+        for (SubjectPresence presence : this.presences) {
+            if (presence.getUser().equals(user)) {
+                return presence;
+            }
+        }
+        return null;
     }
 
     public Date getStart() {
@@ -98,4 +95,11 @@ public class SubjectSchedule extends BaseEntity {
         this.end = end;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

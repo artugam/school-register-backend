@@ -2,6 +2,7 @@ package com.artur.engineer.entities;
 
 import com.artur.engineer.engine.views.CourseView;
 import com.artur.engineer.engine.views.CourseWithUserView;
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -40,19 +41,19 @@ public class Course extends BaseEntity {
     @JsonView({CourseView.class, CourseWithUserView.class})
     private Long id;
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private String name;
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private String form;
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private String degree;
 
     @JsonView({CourseView.class, CourseWithUserView.class})
     private int semesters;
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
+    @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private Date startDate = new Date();
 
     @JsonView({CourseView.class, CourseWithUserView.class})
@@ -66,7 +67,10 @@ public class Course extends BaseEntity {
     private Collection<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Collection<Subject> subjects;
+    private Collection<CourseGroup> groups;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private Collection<Notification> notifications;
 
     public Long getId() {
         return id;
@@ -154,27 +158,63 @@ public class Course extends BaseEntity {
         }
     }
 
-    public Collection<Subject> getSubjects() {
-        return subjects;
-    }
 
-    public void setSubjects(Collection<Subject> subjects) {
-        this.subjects = subjects;
-    }
 
     public User getForeman() {
         return foreman;
     }
 
     public void setForeman(User foreman) {
-        this.unsetForeman();
         this.foreman = foreman;
-        foreman.addCourse(this);
+        if(null != foreman) {
+            foreman.addCourse(this);
+        }
+
     }
 
-    public void unsetForeman() {
-        if(null != this.foreman) {
-            this.foreman.removeCourse(this);
+
+    public Collection<CourseGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Collection<CourseGroup> groups) {
+        this.groups = groups;
+    }
+
+    public void addGroup(CourseGroup group) {
+        if (!this.groups.contains(group)) {
+            this.groups.add(group);
+            group.setCourse(this);
         }
+    }
+
+    public void removeGroup(CourseGroup group) {
+        if (this.groups.contains(group)) {
+            this.groups.remove(group);
+            group.setCourse(null);
+        }
+    }
+
+    public void addNotification(Notification notification) {
+        if(!this.notifications.contains(notification)) {
+            this.notifications.add(notification);
+            notification.setCourse(this);
+        }
+    }
+
+    public void removeNotification(Notification notification) {
+        if(this.notifications.contains(notification)) {
+            this.notifications.remove(notification);
+            notification.setCourse(null);
+        }
+    }
+
+    public Collection<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Collection<Notification> notifications) {
+        this.notifications = notifications;
+
     }
 }

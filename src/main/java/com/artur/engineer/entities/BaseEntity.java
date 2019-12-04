@@ -1,5 +1,8 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.NotificationView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
@@ -9,8 +12,10 @@ import java.util.Date;
 @MappedSuperclass
 abstract public class BaseEntity {
 
+    @JsonView({NotificationView.class})
     private Date createdAt = new Date();
 
+    @JsonView({NotificationView.class})
     private Date updatedAt = new Date();
 
     @PreUpdate

@@ -1,6 +1,7 @@
 package com.artur.engineer.repositories;
 
 import com.artur.engineer.entities.Course;
+import com.artur.engineer.entities.Notification;
 import com.artur.engineer.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,14 +23,16 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
             String form,
             String degree
     );
-//    Page<Course> findByNameContainingOrFormContainingOrDegreeContainingOrSemestersContainingOrStartDateContaining(
-//            Pageable pageable,
-//            String nameSearch,
-//            String form,
-//            String degree,
-//            String semesters,
-//            String startDate
-//    );
+
+    @Query("select c from Course c " +
+            "WHERE (c.name LIKE %:search% OR c.form LIKE %:search% OR c.degree LIKE %:search%)" +
+            "AND c.foreman = :foreman")
+    Page<Course> findForemanCourses(
+            @Param("search") String search,
+            @Param("foreman") User foreman,
+            Pageable pageable
+    );
+
 
 //    @Query("select article from Article article left join fetch article.topics where article.id =:id")
 //    Article findStudentsByCourseId(@Param("id") Long id);
@@ -37,4 +41,6 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
     @Query("DELETE FROM Course o WHERE o.id = :id AND o.users IN :students")
     void deleteStudentsFromCourse(@Param("id") Long id, @Param("students") List<User> students);
+
+    Collection<Course> findAllByIdIn(Collection<Long> ids);
 }

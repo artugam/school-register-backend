@@ -2,10 +2,12 @@ package com.artur.engineer.engine.managers;
 
 import com.artur.engineer.engine.readers.CoursesReader;
 import com.artur.engineer.entities.Course;
+import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.course.CourseCreate;
 import com.artur.engineer.payload.course.StudentsIds;
 import com.artur.engineer.repositories.CourseRepository;
+import com.artur.engineer.repositories.RoleRepository;
 import com.artur.engineer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,9 @@ public class CourseManager {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public Course createOrUpdate(Course course, String name, String degree, String form, int semesters, Date startDate, int currentSemester) {
 
@@ -79,8 +84,24 @@ public class CourseManager {
         User user = userRepository.findById(userId).get();
         Course course = repository.findById(courseId).get();
 
+        Role role = roleRepository.findByName(Role.ROLE_SUPER_USER);
+        User foreman = null;
+        if(null != course.getForeman() && course.getForeman().getForemanCourses().size() < 2) {
+            foreman = course.getForeman();
+            foreman.removeRole(role);
+            foreman.removeForemanCourse(course);
+        }
+
+
+        user.addRole(role);
+
+        if(null != foreman) {
+            userRepository.save(foreman);
+        }
         course.setForeman(user);
         repository.save(course);
+
+
 
         return course;
     }

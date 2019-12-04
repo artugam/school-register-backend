@@ -66,7 +66,7 @@ public class UserInitialDataLoader extends InitialDataLoader implements
             return;
         }
         Role userRole = roleRepository.findByName(Role.ROLE_USER);
-        User user = userManager.createOrUpdate(new User(),"UserIdPayload", "UserIdPayload", "user@user.com", "user", Arrays.asList(userRole), true);
+        User user = userManager.createOrUpdate(new User(),"UserIdPayload", "UserIdPayload", "user@user.com", "user", Arrays.asList(userRole), true, "123123");
     }
 
     @Transactional
@@ -79,6 +79,6 @@ public class UserInitialDataLoader extends InitialDataLoader implements
         Role teacherRole = roleRepository.findByName(Role.ROLE_TEACHER);
         Role adminRole = roleRepository.findByName(Role.ROLE_ADMIN);
         Collection roles = Arrays.asList(adminRole, userSuperRole, teacherRole, userRole);
-        User admin = userManager.createOrUpdate(new User(), "Admin", "Admin", "admin@admin.com", "admin", roles, true);
+        User admin = userManager.createOrUpdate(new User(), "Admin", "Admin", "admin@admin.com", "admin", roles, true, "123123");
     }
 }

@@ -1,5 +1,8 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.SubjectPresenceView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Arrays;
 
@@ -9,12 +12,15 @@ import java.util.Arrays;
 @Entity
 public class SubjectPresence extends BaseEntity{
 
+    public final static String STATUS_PRESENCE_NONE = "";
     public final static String STATUS_PRESENCE_TRUE = "Obecny";
     public final static String STATUS_PRESENCE_LATE = "Spóźniony";
     public final static String STATUS_PRESENCE_JUSTIFIED = "Usprawiedliwiony";
     public final static String STATUS_PRESENCE_FALSE = "Nieobecny";
 
+
     public final static String ALLOWED_STATUS_PRESENCE[] = {
+            STATUS_PRESENCE_NONE,
             STATUS_PRESENCE_TRUE,
             STATUS_PRESENCE_LATE,
             STATUS_PRESENCE_JUSTIFIED,
@@ -22,8 +28,9 @@ public class SubjectPresence extends BaseEntity{
     };
 
     @Id
+    @JsonView(SubjectPresenceView.class)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn
@@ -31,11 +38,13 @@ public class SubjectPresence extends BaseEntity{
 
     @ManyToOne
     @JoinColumn
+    @JsonView(SubjectPresenceView.class)
     private User user;
 
+    @JsonView(SubjectPresenceView.class)
     private String presenceStatus;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -65,4 +74,6 @@ public class SubjectPresence extends BaseEntity{
         }
         this.presenceStatus = presenceStatus;
     }
+
+
 }

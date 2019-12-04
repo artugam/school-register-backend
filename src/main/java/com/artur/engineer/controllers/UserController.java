@@ -8,8 +8,10 @@ import com.artur.engineer.engine.views.UserView;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;
+import com.artur.engineer.payload.user.UserBlockPayload;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
+import com.artur.engineer.payload.user.UserPassword;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Artur Pilch <artur.pilch12@gmail.com>
@@ -45,15 +45,16 @@ public class UserController {
             @RequestParam(required = false, defaultValue = "10") Integer records,
             @RequestParam(required = false, defaultValue = "id") String sortField,
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
-            @RequestParam(required = false, defaultValue = "") String search
+            @RequestParam(required = false, defaultValue = "") String search,
+            @RequestParam(required = false, defaultValue = "ROLE_USER") String role
     ) {
-        return userReader.getAllUsers(page, records, sortField, sortDirection, search);
+        return userReader.getAllUsers(page, records, sortField, sortDirection, search, role);
     }
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     public User createUser(@Valid @RequestBody UserCreateWithPassword userCreateRequest) throws ApiException {
         return userManager.create(userCreateRequest);
     }
@@ -61,7 +62,7 @@ public class UserController {
     @PatchMapping(path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     public User editUser(@PathVariable(value = "userId") Long id, @Valid @RequestBody UserCreate userCreateRequest) throws ApiException {
         return userManager.edit(id, userCreateRequest);
     }
@@ -69,7 +70,7 @@ public class UserController {
     @DeleteMapping(path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     public boolean deleteUser(@PathVariable(value = "userId") Long id) {
         userManager.remove(id);
         return true;
@@ -78,7 +79,7 @@ public class UserController {
     @GetMapping(path = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     public User getUser(@PathVariable(value = "userId") Long id) {
         return userReader.get(id);
     }
@@ -86,24 +87,42 @@ public class UserController {
     @PostMapping(path = "/{userId}/block")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public User blockUser(@PathVariable(value = "userId") Long id) {
-        return userManager.block(id);
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public User blockUser(
+            @PathVariable(value = "userId") Long id,
+          @Valid @RequestBody UserBlockPayload payload
+    ) {
+        return userManager.block(id, payload);
     }
 
     @PostMapping(path = "/{userId}/unblock")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public User unblockUser(@PathVariable(value = "userId") Long id) {
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public User unblockUser(
+            @PathVariable(value = "userId") Long id) {
         return userManager.unblock(id);
+    }
+
+    @PatchMapping(path = "/{userId}/password")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({UserView.class})
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public User setPassword(
+            @PathVariable(value = "userId") Long id,
+            @Valid @RequestBody UserPassword payload
+    ) {
+        return userManager.setPassword(id, payload);
     }
 
     @PostMapping(path = "/upload/csv")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ApiResponse uploadUsersCsvFile(@RequestParam("file") MultipartFile file) throws ApiException, IOException{
-        return userManager.addUsersFromCsv(file);
+    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    public ApiResponse uploadUsersCsvFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("courseId") Long courseId
+    ) throws ApiException, IOException {
+        return userManager.addUsersFromCsv(file, courseId);
     }
 
 

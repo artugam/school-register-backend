@@ -1,5 +1,9 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.GradeView;
+import com.artur.engineer.engine.views.UserView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Arrays;
 
@@ -9,6 +13,7 @@ import java.util.Arrays;
 @Entity
 public class Grade extends BaseEntity {
 
+    public final static double GRADE_EMPTY = 0;
     public final static double GRADE_TWO = 2;
     public final static double GRADE_THREE = 3;
     public final static double GRADE_THREE_PLUS = 3.5;
@@ -16,7 +21,8 @@ public class Grade extends BaseEntity {
     public final static double GRADE_FOUR_PLUS = 4.5;
     public final static double GRADE_FIVE = 5;
 
-    public final static double ALLOWED_GRADES[] = {
+    public final static Double ALLOWED_GRADES[] = {
+            GRADE_EMPTY,
             GRADE_TWO,
             GRADE_THREE,
             GRADE_THREE_PLUS,
@@ -25,29 +31,26 @@ public class Grade extends BaseEntity {
             GRADE_FIVE,
     };
 
-    public final static String TYPE_GRADE_END = "Końcowa";
-    public final static String TYPE_GRADE_PARTIAL = "Cząstkowa";
-
-    public final static String ALLOWED_GRADES_TYPES[] = {
-            TYPE_GRADE_END,
-            TYPE_GRADE_PARTIAL
-    };
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView({GradeView.class})
     private Long id;
 
     @ManyToOne
     @JoinColumn
+    @JsonView({GradeView.class})
     private User user;
 
     @ManyToOne
     @JoinColumn
-    private SubjectSchedule subjectSchedule;
+    @JsonView({GradeView.class})
+    private Subject subject;
 
+    @JsonView({GradeView.class})
     private double grade;
 
-    private String type;
+    @JsonView({GradeView.class})
+    private String description;
 
     public Long getId() {
         return id;
@@ -61,12 +64,12 @@ public class Grade extends BaseEntity {
         this.user = user;
     }
 
-    public SubjectSchedule getSubjectSchedule() {
-        return subjectSchedule;
+    public Subject getSubject() {
+        return subject;
     }
 
-    public void setSubjectSchedule(SubjectSchedule subjectSchedule) {
-        this.subjectSchedule = subjectSchedule;
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
     public double getGrade() {
@@ -80,14 +83,11 @@ public class Grade extends BaseEntity {
         this.grade = grade;
     }
 
-    public String getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
 
-    public void setType(String type) {
-        if (!Arrays.asList(ALLOWED_GRADES_TYPES).contains(type)) {
-            return;
-        }
-        this.type = type;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

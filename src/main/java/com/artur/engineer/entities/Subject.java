@@ -1,47 +1,69 @@
 package com.artur.engineer.entities;
 
+import com.artur.engineer.engine.views.SubjectScheduleFullView;
+import com.artur.engineer.engine.views.SubjectView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Collection;
 
+
 @Entity
-public class Subject extends BaseEntity{
+public class Subject extends BaseEntity {
 
-    public final static String GRADE_TYPE_PASSED = "Zaliczenie";
-    public final static String GRADE_TYPE_PASSED_WITH_GRADE = "Zaliczenie na ocene";
-    public final static String GRADE_TYPE_EXAM = "Egzamin";
+    public final static String SUBJECT_TYPE_LAB = "Laboratorium";
+    public final static String SUBJECT_TYPE_LECTURE = "Wykład";
+    public final static String SUBJECT_TYPE_EXERCISES = "Ćwiczenia";
 
-    public final static String ALLOWED_GRADES_TYPES[] = {
-            Subject.GRADE_TYPE_EXAM,
-            Subject.GRADE_TYPE_PASSED_WITH_GRADE,
-            Subject.GRADE_TYPE_PASSED,
+    public final static String ALLOWED_SUBJECT_TYPES[] = {
+            Subject.SUBJECT_TYPE_LAB,
+            Subject.SUBJECT_TYPE_LECTURE,
+            Subject.SUBJECT_TYPE_EXERCISES,
     };
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
+    private Long id;
 
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
     private String name;
 
+    @JsonView({SubjectView.class})
     private double hours;
 
-    private String gradeType;
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
+    private String type;
 
-    private int ects;
-
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<SubjectSchedule> subjectSchedule;
+
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Grade> grades;
 
     @ManyToOne
     @JoinColumn
-    private Course course;
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
+    private CourseGroup group;
 
-    public Integer getId() {
+    @JsonView({SubjectView.class, SubjectScheduleFullView.class})
+    @ManyToMany
+    @JoinTable(
+            name = "subject_teachers",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "subject_id", referencedColumnName = "id"))
+    private Collection<User> teachers;
+
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Notification> notifications;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -61,24 +83,6 @@ public class Subject extends BaseEntity{
         this.hours = hours;
     }
 
-    public String getGradeType() {
-        return gradeType;
-    }
-
-    public void setGradeType(String gradeType) {
-        if (!Arrays.asList(ALLOWED_GRADES_TYPES).contains(gradeType)) {
-            return;
-        }
-        this.gradeType = gradeType;
-    }
-
-    public int getEcts() {
-        return ects;
-    }
-
-    public void setEcts(int ects) {
-        this.ects = ects;
-    }
 
     public Collection<SubjectSchedule> getSubjectSchedule() {
         return subjectSchedule;
@@ -88,11 +92,73 @@ public class Subject extends BaseEntity{
         this.subjectSchedule = subjectSchedule;
     }
 
-    public Course getCourse() {
-        return course;
+    public CourseGroup getGroup() {
+        return group;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setGroup(CourseGroup group) {
+        this.group = group;
+    }
+
+    public Collection<User> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(Collection<User> teachers) {
+        this.teachers = teachers;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String subjectType) {
+        this.type = subjectType;
+    }
+
+    public void addTeacher(User u) {
+
+        if (!this.teachers.contains(u)) {
+            this.teachers.add(u);
+            u.addTeachSubject(this);
+        }
+    }
+
+    public void removeTeacher(User u) {
+        if (this.teachers.contains(u)) {
+            this.teachers.remove(u);
+            u.removeTeachSubject(this);
+        }
+    }
+
+    public Collection<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Collection<Grade> grades) {
+        this.grades = grades;
+    }
+
+    public void addNotification(Notification notification) {
+        if(!this.notifications.contains(notification)) {
+            this.notifications.add(notification);
+            notification.setSubject(this);
+        }
+    }
+
+    public void removeNotification(Notification notification) {
+        if(this.notifications.contains(notification)) {
+            this.notifications.remove(notification);
+            notification.setSubject(null);
+        }
+    }
+
+    public Collection<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Collection<Notification> notifications) {
+        this.notifications = notifications;
+
     }
 }
