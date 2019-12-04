@@ -8,6 +8,7 @@ import com.artur.engineer.entities.Course;
 import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.ApiResponse;
+import com.artur.engineer.payload.user.UserBlockPayload;
 import com.artur.engineer.payload.user.UserCreate;
 import com.artur.engineer.payload.user.UserCreateWithPassword;
 import com.artur.engineer.payload.user.UserPassword;
@@ -75,17 +76,20 @@ public class UserManager {
         userRepository.deleteById(id);
     }
 
-    public User block(Long id) {
-        return this.setUserStatus(id, false);
+    public User block(Long id, UserBlockPayload payload) {
+        return this.setUserStatus(id, false, payload.getLockReason());
     }
 
     public User unblock(Long id) {
-        return this.setUserStatus(id, true);
+        return this.setUserStatus(id, true, "");
     }
 
-    public User setUserStatus(Long id, boolean status) {
+    public User setUserStatus(Long id, boolean status, String lockReason) {
         User user = userReader.get(id);
         user.setEnabled(status);
+        if(!status) {
+            user.setLockReason(lockReason);
+        }
         userRepository.save(user);
 
         return user;

@@ -38,6 +38,9 @@ public class User extends BaseEntity {
     @JsonView(UserView.class)
     private boolean enabled;
 
+    @JsonView(UserView.class)
+    private String lockReason;
+
     @ManyToMany
     @JoinTable(
             name = "user_role",
@@ -294,5 +297,13 @@ public class User extends BaseEntity {
 
     public void setPasswordResetToken(String passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
+    }
+
+    public String getLockReason() {
+        return lockReason;
+    }
+
+    public void setLockReason(String lockReason) {
+        this.lockReason = lockReason;
     }
 }

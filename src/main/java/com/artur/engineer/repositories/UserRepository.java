@@ -51,7 +51,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
             Pageable pageable
     );
 
-    @Query("select u from User u join u.groups c where c.id = :courseGroupId")
+    @Query("select u from User u join u.groups c where c.id = :courseGroupId AND u.enabled = 1")
     Collection<User> findAllByCourseGroupId(
             @Param("courseGroupId") Long courseGroupId,
             Sort sort
