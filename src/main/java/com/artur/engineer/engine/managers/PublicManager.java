@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.ws.rs.NotFoundException;
 import java.util.*;
 
@@ -37,7 +40,7 @@ public class PublicManager {
     private String frontUrl;
 
 
-    public void resetPassword(String email) {
+    public void resetPassword(String email) throws MessagingException {
 
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new NotFoundException("User not found")
@@ -49,10 +52,19 @@ public class PublicManager {
         user.setPasswordResetToken(token);
         userRepository.save(user);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
+        MimeMessage message = this.emailSender.createMimeMessage();
+
         message.setSubject("Reset hasła");
-        message.setText("Kliknij w link by zresetować hasło "+frontUrl+"password-reset/"+token);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);;
+        helper.setTo(email);
+        String link = frontUrl+"password-reset/"+token;
+        helper.setText("Kliknij w ponizszy link by zresetowac haslo <p><a href=\""+link+"\">Zresetuj</a></p>", true);
+
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(email);
+//        message.setSubject("Reset hasła");
+//        message.setText("Kliknij w link by zresetować hasło "+frontUrl+"password-reset/"+token);
+
         emailSender.send(message);
     }
 

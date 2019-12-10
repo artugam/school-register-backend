@@ -53,5 +53,4 @@ public class GradeController {
 
         return new ApiResponse(true, "Updated");
     }
-
 }

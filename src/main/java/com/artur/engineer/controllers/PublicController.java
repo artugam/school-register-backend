@@ -38,6 +38,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.Collection;
@@ -61,7 +62,7 @@ public class PublicController {
     @JsonView({ApiResponseView.class})
     public ApiResponse passwordReset (
             @Valid @RequestBody PasswordResetPayload payload
-    ) {
+    ) throws MessagingException {
         manager.resetPassword(payload.getEmail());
         return new ApiResponse(true, "Email send");
     }
