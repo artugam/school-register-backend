@@ -21,7 +21,7 @@ public class RoleController {
     private RoleRepository roleRepository;
 
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({UserView.class})

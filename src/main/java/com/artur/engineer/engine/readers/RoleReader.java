@@ -76,6 +76,7 @@ public class RoleReader {
     public Iterable getTeacherRoles() {
         return Arrays.asList(
                 Role.ROLE_TEACHER,
+                Role.ROLE_SUPER_USER,
                 Role.ROLE_USER
         );
     }
