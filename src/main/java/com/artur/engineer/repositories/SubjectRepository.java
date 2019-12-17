@@ -31,7 +31,9 @@ public interface SubjectRepository extends CrudRepository<Subject, Integer> {
 
     Collection<Subject> findAll();
 
-    @Query("select u from Subject u join u.group c join c.users users where users.id = :userId AND ( u.name LIKE %:search%)")
+    @Query("select u from Subject u join u.group c join c.users users join c.course course " +
+            "where users.id = :userId " +
+            "AND ( u.name LIKE %:search% OR c.name LIKE %:search% OR course.name LIKE %:search% OR u.type LIKE %:search% OR u.hours LIKE %:search%)")
     Page<Subject> findAllSubjectByUserId (
             @Param("userId") Long userId,
             @Param("search") String search,

@@ -66,6 +66,16 @@ public class CourseManager {
 
         Optional<Course> courseOptional = repository.findById(id);
         Course course = courseOptional.get();
+        if(users.contains(course.getForeman())) {
+
+            course.setForeman(null);
+            if (course.getForeman().getForemanCourses().size() == 1) {
+                Role role = roleRepository.findByName(Role.ROLE_SUPER_USER);
+                course.getForeman().removeRole(role);
+                course.getForeman().removeForemanCourse(course);
+            }
+
+        }
         course.removeUsers(users);
         repository.save(course);
     }
@@ -83,14 +93,21 @@ public class CourseManager {
     public Course setForeman(Long courseId, Long userId) {
 
         Course course = repository.findById(courseId).get();
+        Role role = roleRepository.findByName(Role.ROLE_SUPER_USER);
         if (userId < 1) {
+            if (course.getForeman().getForemanCourses().size() == 1) {
+                User foreman = course.getForeman();
+                foreman.removeRole(role);
+                userRepository.save(foreman);
+            }
+
             course.setForeman(null);
             repository.save(course);
             return course;
         }
 
         User user = userRepository.findById(userId).get();
-        Role role = roleRepository.findByName(Role.ROLE_SUPER_USER);
+
         User foreman = null;
         if (null != course.getForeman() && course.getForeman().getForemanCourses().size() < 2) {
             foreman = course.getForeman();

@@ -24,7 +24,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     Optional<User> findById(Long id);
 
-    @Query("select u from User u join u.roles r where r.name IN (:role) AND r.name NOT IN :notRoles AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
+    @Query("select u from User u join u.roles r where r.name IN (:role) AND r.name NOT IN :notRoles " +
+            "AND (u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search% OR u.uniqueNumber LIKE %:search%)")
     Page<User> findByFirstNameContainingOrLastNameContainingOrEmailContainingAndRolesIn(
             @Param("search") String search,
 //            List<String> role,

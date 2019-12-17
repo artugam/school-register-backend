@@ -7,6 +7,7 @@ import com.artur.engineer.engine.readers.UserReader;
 import com.artur.engineer.engine.views.*;
 import com.artur.engineer.entities.Course;
 import com.artur.engineer.entities.CourseGroup;
+import com.artur.engineer.entities.Role;
 import com.artur.engineer.entities.User;
 import com.artur.engineer.payload.ApiResponse;
 import com.artur.engineer.payload.PagedResponse;
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -69,7 +71,14 @@ public class CoursesController {
     @GetMapping(path = "/all/records")
     @ResponseStatus(HttpStatus.OK)
     @JsonView({PagedView.class})
-    public Iterable<Course> findAll() {
+    public Iterable<Course> findAll(
+            @CurrentUser UserPrincipal userPrincipal
+    ) {
+        if(userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_SUPER_USER)) &&
+                !userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_TEACHER))
+        ) {
+            return repository.findAllByForeman(userReader.get(userPrincipal.getId()));
+        }
         return repository.findAll();
     }
 
@@ -108,7 +117,7 @@ public class CoursesController {
 
     @GetMapping(path = "/configuration/options")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_SUPER_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public CourseConfigurationResponse getConfiguration() {
         return reader.getConfiguration();
     }

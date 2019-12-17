@@ -15,7 +15,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -43,13 +45,28 @@ public class CoursesReader {
             chooseDirection = Sort.Direction.DESC;
         }
 
-        if(userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_SUPER_USER)) &&
+//        if(userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_USER)) &&
+//                !userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_SUPER_USER))
+//        ) {
+//
+//            Page<Course> query = this.repository.findForemanCourses(
+//                    search,
+//                    userReader.get(userPrincipal.getId()),
+//                    PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
+//            );
+//            return new PagedResponse<>(query);
+//        }
+
+        if(userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_USER)) &&
             !userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(Role.ROLE_TEACHER))
         ) {
 
+            User user = userReader.get(userPrincipal.getId());
+            List<Long> users = new ArrayList<>(Arrays.asList(user.getId()));
             Page<Course> query = this.repository.findForemanCourses(
                     search,
-                    userReader.get(userPrincipal.getId()),
+//                    user,
+                    users,
                     PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField))
             );
             return new PagedResponse<>(query);

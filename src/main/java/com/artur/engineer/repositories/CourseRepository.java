@@ -24,14 +24,16 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
             String degree
     );
 
-    @Query("select c from Course c " +
+    @Query("SELECT c from Course c JOIN c.users users " +
             "WHERE (c.name LIKE %:search% OR c.form LIKE %:search% OR c.degree LIKE %:search%)" +
-            "AND c.foreman = :foreman")
+            "AND (users.id IN :ids)")
     Page<Course> findForemanCourses(
             @Param("search") String search,
-            @Param("foreman") User foreman,
+            @Param("ids") Collection<Long> ids,
             Pageable pageable
     );
+
+
 
 
 //    @Query("select article from Article article left join fetch article.topics where article.id =:id")
@@ -43,4 +45,6 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
     void deleteStudentsFromCourse(@Param("id") Long id, @Param("students") List<User> students);
 
     Collection<Course> findAllByIdIn(Collection<Long> ids);
+
+    Collection<Course> findAllByForeman(User user);
 }

@@ -15,8 +15,7 @@ public interface RoleRepository extends CrudRepository<Role, Integer> {
 
     List<Role> findAllByNameIn(Iterable roleNames);
 
-
-
-
     Optional<Role> findById(Long id);
+
+
 }

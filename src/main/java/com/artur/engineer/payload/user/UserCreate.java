@@ -22,7 +22,6 @@ public class UserCreate {
     @NotBlank
     protected String lastName;
 
-    @NotBlank
     protected String uniqueNumber;
 
     @NotNull
