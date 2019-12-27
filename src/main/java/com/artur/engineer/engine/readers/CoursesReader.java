@@ -72,10 +72,8 @@ public class CoursesReader {
             return new PagedResponse<>(query);
         }
 
-        Page<Course> query = this.repository.findByNameContainingOrFormContainingOrDegreeContaining(
+        Page<Course> query = this.repository.findToList(
                 PageRequest.of(page - 1, size, Sort.by(chooseDirection, sortField)),
-                search,
-                search,
                 search
         );
         return new PagedResponse<>(query);

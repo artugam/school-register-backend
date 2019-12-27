@@ -14,12 +14,12 @@ import java.util.Arrays;
 public class Grade extends BaseEntity {
 
     public final static double GRADE_EMPTY = 0;
-    public final static double GRADE_TWO = 2;
-    public final static double GRADE_THREE = 3;
+    public final static double GRADE_TWO = 2.0;
+    public final static double GRADE_THREE = 3.0;
     public final static double GRADE_THREE_PLUS = 3.5;
-    public final static double GRADE_FOUR = 4;
+    public final static double GRADE_FOUR = 4.0;
     public final static double GRADE_FOUR_PLUS = 4.5;
-    public final static double GRADE_FIVE = 5;
+    public final static double GRADE_FIVE = 5.0;
 
     public final static Double ALLOWED_GRADES[] = {
             GRADE_EMPTY,

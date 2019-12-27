@@ -17,11 +17,11 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
     Optional<Course> findById(Long id);
 
-    Page<Course> findByNameContainingOrFormContainingOrDegreeContaining(
+    @Query("SELECT c from Course c " +
+            "WHERE (c.name LIKE %:search% OR c.form LIKE %:search% OR c.degree LIKE %:search% OR c.semesters LIKE %:search%)")
+    Page<Course> findToList(
             Pageable pageable,
-            String nameSearch,
-            String form,
-            String degree
+            @Param("search") String search
     );
 
     @Query("SELECT c from Course c JOIN c.users users " +
