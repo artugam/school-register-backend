@@ -3,9 +3,6 @@ package com.artur.engineer.entities;
 import com.artur.engineer.engine.views.SubjectScheduleFullView;
 import com.artur.engineer.engine.views.UserView;
 import com.fasterxml.jackson.annotation.JsonView;
-
-import java.lang.Override;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;

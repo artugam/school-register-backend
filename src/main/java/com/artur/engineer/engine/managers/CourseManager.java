@@ -42,7 +42,7 @@ public class CourseManager {
         course.setForm(form);
         course.setSemesters(semesters);
         course.setStartDate(startDate);
-        course.setCurrentSemester(currentSemester);
+
 
         return repository.save(course);
     }

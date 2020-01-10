@@ -56,8 +56,7 @@ public class Course extends BaseEntity {
     @JsonView({CourseView.class, CourseWithUserView.class, SubjectScheduleFullView.class})
     private Date startDate = new Date();
 
-    @JsonView({CourseView.class, CourseWithUserView.class})
-    private int currentSemester;
+
 
     @ManyToOne
     @JsonView({CourseView.class, CourseWithUserView.class})
@@ -116,13 +115,6 @@ public class Course extends BaseEntity {
         this.startDate = startDate;
     }
 
-    public int getCurrentSemester() {
-        return currentSemester;
-    }
-
-    public void setCurrentSemester(int currentSemester) {
-        this.currentSemester = currentSemester;
-    }
 
     public Collection<User> getUsers() {
         return users;
